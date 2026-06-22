@@ -1,0 +1,25 @@
+@theme {
+  --color-ink: #1A1D23;
+  --color-paper: #F7F7F5;
+  --color-signal-blue: #2D5BFF;
+  --color-minor-grey: #6B7280;
+  --color-border-grey: #D9D9D6;
+
+  /* Severity badge fills (backgrounds) */
+  --color-severity-critical: #D14343;
+  --color-severity-serious: #E08A2E;
+  --color-severity-moderate: #C9A227;
+  --color-severity-minor: #6B7280;
+  --color-severity-pass: #2F9E5C;
+
+  /* Severity text-safe variants */
+  --color-severity-critical-text: #B23030;
+  --color-severity-serious-text: #9A5A1A;
+  --color-severity-moderate-text: #7D6418;
+  --color-severity-minor-text: #6B7280;
+  --color-severity-pass-text: #1F7A45;
+
+  /* Typography fonts */
+  --font-sans: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}

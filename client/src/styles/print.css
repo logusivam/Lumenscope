@@ -1,0 +1,30 @@
+@media print {
+  /* Avoid printing page headers, footers and navigation links */
+  header, footer, nav, .no-print {
+    display: none !important;
+  }
+
+  /* Page break helpers */
+  .page-break-before {
+    break-before: page !important;
+    page-break-before: always !important;
+  }
+
+  .page-break-after {
+    break-after: page !important;
+    page-break-after: always !important;
+  }
+
+  /* Layout adjustments for print */
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt;
+  }
+
+  /* Preserve colors in print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

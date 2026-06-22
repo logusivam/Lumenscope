@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="2048"
+   height="2048"
+   viewBox="0 0 2048 2048"
+   version="1.1"
+   id="svg25"
+   sodipodi:docname="lumenscope-logo-full-source - Copy.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs25" />
+  <sodipodi:namedview
+     id="namedview25"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true">
+    <inkscape:page
+       x="0"
+       y="0"
+       width="2048"
+       height="2048"
+       id="page2"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <path
+     fill="#ffffff"
+     d="M 0,0 H 2048 V 2048 H 0 Z"
+     id="path1" />
+  <text
+     xml:space="preserve"
+     style="font-size:228.615px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-linejoin:round;stroke-miterlimit:14.6"
+     x="614.85742"
+     y="1081.7297"
+     id="text1"><tspan
+       sodipodi:role="line"
+       id="tspan1"
+       x="614.85742"
+       y="1081.7297"
+       style="stroke-width:0"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:228.615px;font-family:'IBM Plex Sans';-inkscape-font-specification:'IBM Plex Sans, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#1a1d23;fill-opacity:1;stroke-width:0"
+         id="tspan2">Lumen</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:228.615px;font-family:'IBM Plex Sans';-inkscape-font-specification:'IBM Plex Sans, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2d5bff;fill-opacity:1;stroke-width:0"
+         id="tspan3">scope</tspan></tspan></text>
+  <path
+     fill="#23252a"
+     d="m 293.633,907.372 c 40.96,-3.164 75.515,7.016 110.099,30.651 10.838,7.406 46.557,36.374 51.96,51.556 0.763,2.144 -3.377,8.544 -5.178,10.651 -31.465,36.85 -75.453,67.12 -124.525,71.8 -44.316,4.69 -81.783,-7.94 -118.375,-33.69 -9.968,-7.02 -41.977,-33.77 -46.948,-47.577 -0.594,-1.65 2.888,-7.597 4.454,-9.401 33.769,-38.914 77.505,-68.069 128.513,-73.99 z"
+     id="path2" />
+  <path
+     fill="#ffffff"
+     d="m 297.87,926.384 c 50.945,-3.596 104.482,24.273 135.454,63.914 l -0.636,0.784 c -27.929,33.858 -69.471,57.338 -113.442,61.378 -49.809,5.57 -104.12,-24.65 -135.268,-61.897 23.903,-33.534 72.944,-60.257 113.892,-64.179 z"
+     id="path3" />
+  <path
+     fill="#23252a"
+     d="m 302.523,959.569 c 16.56,-3.12 32.516,7.768 35.648,24.326 3.132,16.555 -7.743,32.525 -24.299,35.665 -16.573,3.15 -32.558,-7.74 -35.694,-24.316 -3.135,-16.575 7.767,-32.552 24.345,-35.675 z"
+     id="path4" />
+  <path
+     fill="#383ff4"
+     d="m 356.601,1198.46 c -21.047,5.24 -42.783,7.16 -64.424,5.7 -56.845,-4.57 -109.562,-31.48 -146.605,-74.84 -37.365,-43.49 -55.9827,-100 -51.7775,-157.181 4.5327,-59.01 32.6445,-113.706 77.9895,-151.74 42.047,-35.722 96.626,-53.16 151.595,-48.435 7.797,0.636 13.185,1.255 20.87,2.599 17.38,3.204 31.13,7.009 47.38,14.176 54.03,23.719 96.106,68.369 116.58,123.71 20.908,55.094 17.065,108.921 -6.703,162.171 -5.815,-4.59 -10.513,-7.67 -16.742,-11.71 38.865,-85.377 7.297,-184.548 -68.885,-237.319 -41.665,-29.045 -93.236,-40.169 -143.169,-30.882 -51.21,9.48 -96.409,39.267 -125.318,82.587 -29.163,43.69 -39.973,97.098 -30.093,148.694 10.2,51.41 40.486,96.64 84.146,125.65 44.099,29.36 94.39,38.32 146.1,28.03 2.895,6.56 5.803,12.38 9.056,18.79 z"
+     id="path5" />
+  <path
+     fill="#117a4c"
+     d="m 427.103,1073.54 c 40.642,-5.89 78.365,22.28 84.266,62.92 5.9,40.64 -22.255,78.37 -62.893,84.28 -40.655,5.92 -78.405,-22.25 -84.308,-62.91 -5.903,-40.66 22.277,-78.4 62.935,-84.29 z"
+     id="path6" />
+  <path
+     fill="#ffffff"
+     d="m 466.222,1119.64 c 21.493,5.06 -11.474,28.47 -18.126,35.86 -22.721,25.23 -19.04,22.11 -41.463,-0.41 -2.438,-2.39 -8.822,-7.4 -7.616,-11.07 2.951,-8.97 9.114,-6.98 14.254,-1.4 4.334,4.71 10.514,9.69 15.01,13.77 8.826,-8.14 30.904,-32.1 37.941,-36.75 z"
+     id="path7" />
+  <path
+     fill="#e6e8ee"
+     d="m 1739.59,1073.81 c -0.45,-3.56 0.01,-9.44 2.7,-2.68 -1.43,1.1 -1.51,1.25 -2.7,2.68 z"
+     id="path9" />
+  <path
+     fill="#e6e8ee"
+     d="m 915.829,979.916 c 0.929,2.212 1.221,2.829 2.376,4.923 -0.294,1.343 -0.268,1.914 -1.314,2.725 l -0.16,-0.048 -0.063,0.014 c -1.055,-1.062 -0.812,-6.173 -0.839,-7.614 z"
+     id="path12" />
+  <path
+     fill="#ffffff"
+     d="m 1127.17,987.315 c 19.74,-2.275 33.44,3.387 35.23,24.705 0.28,3.27 -1.61,3.56 -4.36,3.57 l -14.79,-0.04 c -11.16,-0.08 -22.67,0.18 -33.72,-0.18 -4.09,-0.13 0.39,-14.59 1.67,-16.805 4.01,-6.886 8.73,-8.849 15.97,-11.25 z"
+     id="path16" />
+  <path
+     fill="#ffffff"
+     d="m 1892.09,980.252 c 31.99,-3.436 41.4,9.87 44.85,38.948 -7.57,0.16 -15.13,0.22 -22.69,0.17 l -47.37,-0.43 c 2.56,-19.62 3.17,-32.755 25.21,-38.688 z"
+     id="path18" />
+  <path
+     fill="#23252a"
+     d="m 515.376,1205.78 c 9.856,1.85 25.866,21.66 33.892,29.02 11.282,10.35 23.604,22.69 34.074,33.92 5.816,6.24 -1.579,12.92 -6.954,16.16 -1.955,-0.44 -5.247,-0.78 -6.802,-2.28 -20.61,-19.87 -40.907,-40.1 -61.157,-60.32 -6.415,-6.41 2.343,-12.91 6.947,-16.5 z"
+     id="path25" />
+</svg>

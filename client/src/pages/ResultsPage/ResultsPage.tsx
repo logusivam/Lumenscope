@@ -13,7 +13,7 @@ import { AxeResults } from '../../types/axe';
 export const ResultsPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { scan, status, error } = useScan('http://localhost:3001');
+  const { scan, status } = useScan('http://localhost:3001');
 
   // Load results from navigation state
   const [results, setResults] = useState<AxeResults | null>(location.state?.results || null);

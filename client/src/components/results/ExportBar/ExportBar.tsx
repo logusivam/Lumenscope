@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AxeResults } from '../../../types/axe';
-import { Download, FileDown, ClipboardCopy } from 'lucide-react';
+import { Download, FileDown, ClipboardCopy, Loader2 } from 'lucide-react';
 
 interface ExportBarProps {
   results: AxeResults;
@@ -8,175 +8,89 @@ interface ExportBarProps {
 }
 
 export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
+  const [exporting, setExporting] = useState(false);
+
   const handleExportPDF = async () => {
-    // Colorspace conversion helpers
-    const oklabToRgb = (l: number, a: number, b: number, alpha?: number): string => {
-      const l_ = l + 0.3963377774 * a + 0.2158037573 * b;
-      const m_ = l - 0.1055613458 * a - 0.0638541728 * b;
-      const s_ = l - 0.0894841775 * a - 1.2914855480 * b;
-
-      const l_3 = Math.pow(Math.max(0, l_), 3);
-      const m_3 = Math.pow(Math.max(0, m_), 3);
-      const s_3 = Math.pow(Math.max(0, s_), 3);
-
-      const x = +1.2270138511 * l_3 - 0.5577999807 * m_3 + 0.2812561489 * s_3;
-      const y = -0.0405801784 * l_3 + 1.1122568696 * m_3 - 0.0716766787 * s_3;
-      const z = -0.0763812845 * l_3 - 0.4290461323 * m_3 + 1.1503072567 * s_3;
-
-      let r = +3.2404542 * x - 1.5371385 * y - 0.4985314 * z;
-      let g = -0.9692660 * x + 1.8760108 * y + 0.0415560 * z;
-      let _b = +0.0556434 * x - 0.2040259 * y + 1.0572252 * z;
-
-      const fn = (comp: number) => {
-        return comp > 0.0031308 ? 1.055 * Math.pow(comp, 1 / 2.4) - 0.055 : 12.92 * comp;
-      };
-
-      r = Math.max(0, Math.min(255, Math.round(fn(r) * 255)));
-      g = Math.max(0, Math.min(255, Math.round(fn(g) * 255)));
-      _b = Math.max(0, Math.min(255, Math.round(fn(_b) * 255)));
-
-      if (alpha !== undefined) {
-        return `rgba(${r}, ${g}, ${_b}, ${alpha})`;
-      }
-      return `rgb(${r}, ${g}, ${_b})`;
-    };
-
-    const oklchToRgb = (l: number, c: number, h: number, alpha?: number): string => {
-      const hRad = (h * Math.PI) / 180;
-      const a = c * Math.cos(hRad);
-      const b = c * Math.sin(hRad);
-      return oklabToRgb(l, a, b, alpha);
-    };
-
-    const convertOklchAndOklab = (css: string): string => {
-      let result = css.replace(/oklch\(([^)]+)\)/gi, (match, content) => {
-        try {
-          const parts = content.split(/[\s,/]+/).filter(Boolean);
-          if (parts[0] === 'from') {
-            return 'rgb(45, 91, 255)'; // theme accent fallback for relative color
-          }
-          if (parts.length >= 3) {
-            const l = parts[0].endsWith('%') ? parseFloat(parts[0]) / 100 : parseFloat(parts[0]);
-            const c = parseFloat(parts[1]);
-            const h = parseFloat(parts[2]);
-            const a = parts[3] ? (parts[3].endsWith('%') ? parseFloat(parts[3]) / 100 : parseFloat(parts[3])) : undefined;
-            if (!isNaN(l) && !isNaN(c) && !isNaN(h)) {
-              return oklchToRgb(l, c, h, a);
-            }
-          }
-        } catch (e) {}
-        return 'rgb(45, 91, 255)';
-      });
-
-      result = result.replace(/oklab\(([^)]+)\)/gi, (match, content) => {
-        try {
-          const parts = content.split(/[\s,/]+/).filter(Boolean);
-          if (parts[0] === 'from') {
-            return 'rgb(75, 85, 99)'; // neutral fallback
-          }
-          if (parts.length >= 3) {
-            const l = parts[0].endsWith('%') ? parseFloat(parts[0]) / 100 : parseFloat(parts[0]);
-            const aVal = parseFloat(parts[1]);
-            const bVal = parseFloat(parts[2]);
-            const a = parts[3] ? (parts[3].endsWith('%') ? parseFloat(parts[3]) / 100 : parseFloat(parts[3])) : undefined;
-            if (!isNaN(l) && !isNaN(aVal) && !isNaN(bVal)) {
-              return oklabToRgb(l, aVal, bVal, a);
-            }
-          }
-        } catch (e) {}
-        return 'rgb(75, 85, 99)';
-      });
-
-      return result;
-    };
-
-    // Save original stylesheet disabled states and reconstruct combined CSS
-    const sheetsToRestore: { sheet: CSSStyleSheet; disabled: boolean }[] = [];
-    const tempStyles: HTMLStyleElement[] = [];
-    let combinedCss = '';
-
-    Array.from(document.styleSheets).forEach((sheet) => {
-      try {
-        if (sheet.cssRules) {
-          const rulesText = Array.from(sheet.cssRules)
-            .map((rule) => rule.cssText)
-            .join('\n');
-          combinedCss += '\n' + rulesText;
-          sheetsToRestore.push({ sheet, disabled: sheet.disabled });
-          sheet.disabled = true;
-        }
-      } catch (e) {
-        // Cross-origin sheets or security boundaries - disable them to prevent html2canvas parsing errors
-        try {
-          sheetsToRestore.push({ sheet, disabled: sheet.disabled });
-          sheet.disabled = true;
-        } catch (e2) {}
-      }
-    });
-
-    // Clean combined CSS
-    combinedCss = convertOklchAndOklab(combinedCss);
-
-    // Create a temporary stylesheet containing the converted styles
-    const tempStyle = document.createElement('style');
-    tempStyle.innerHTML = combinedCss;
-    document.head.appendChild(tempStyle);
-    tempStyles.push(tempStyle);
-
-    const element = document.getElementById('results-dashboard');
-    const inlineStyleElements: { el: HTMLElement; originalStyle: string }[] = [];
-    if (element) {
-      const allDashboardEls = Array.from(element.querySelectorAll('*')) as HTMLElement[];
-      allDashboardEls.forEach((el) => {
-        if (el.getAttribute && el.getAttribute('style')) {
-          const original = el.getAttribute('style') || '';
-          if (original.includes('oklch') || original.includes('oklab')) {
-            inlineStyleElements.push({ el, originalStyle: original });
-            el.setAttribute('style', convertOklchAndOklab(original));
-          }
-        }
-      });
-    }
-
-    // Dynamic import of html2pdf.js client-side only
-    const html2pdfModule = await import('html2pdf.js');
-    if (!element) {
-      // Restore styles in case of missing target
-      sheetsToRestore.forEach(({ sheet, disabled }) => {
-        try {
-          sheet.disabled = disabled;
-        } catch (e) {}
-      });
-      tempStyles.forEach((el) => el.remove());
-      inlineStyleElements.forEach(({ el, originalStyle }) => {
-        el.setAttribute('style', originalStyle);
-      });
-      return;
-    }
-
-    const opt = {
-      margin: 10,
-      filename: `lumenscope-report-${new Date().toISOString().split('T')[0]}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    };
+    if (exporting) return;
+    setExporting(true);
 
     try {
-      await html2pdfModule.default().from(element).set(opt).save();
+      const element = document.getElementById('results-dashboard');
+      if (!element) {
+        console.error('PDF export: #results-dashboard element not found');
+        setExporting(false);
+        return;
+      }
+
+      // Deep-clone the element so we don't affect the live page
+      const clone = element.cloneNode(true) as HTMLElement;
+
+      // Inline all computed styles onto each element in the clone
+      // This bypasses html2canvas's CSS stylesheet parsing entirely
+      const sourceElements = element.querySelectorAll('*');
+      const cloneElements = clone.querySelectorAll('*');
+
+      // Also inline styles for the root clone element itself
+      const rootComputedStyle = window.getComputedStyle(element);
+      const rootCssText = buildInlineStyle(rootComputedStyle);
+      clone.setAttribute('style', rootCssText);
+
+      for (let i = 0; i < sourceElements.length; i++) {
+        const srcEl = sourceElements[i] as HTMLElement;
+        const clnEl = cloneElements[i] as HTMLElement;
+        if (!srcEl || !clnEl) continue;
+
+        try {
+          const computed = window.getComputedStyle(srcEl);
+          const inlineCss = buildInlineStyle(computed);
+          clnEl.setAttribute('style', inlineCss);
+        } catch (e) {
+          // Skip elements where getComputedStyle fails (SVGs, etc.)
+        }
+      }
+
+      // Remove canvas/iframe/video elements that can't be rendered
+      clone.querySelectorAll('iframe, video, object, embed').forEach(el => el.remove());
+
+      // Create an offscreen container to hold the clone
+      const offscreen = document.createElement('div');
+      offscreen.style.position = 'fixed';
+      offscreen.style.top = '-9999px';
+      offscreen.style.left = '-9999px';
+      offscreen.style.width = element.scrollWidth + 'px';
+      offscreen.style.zIndex = '-1';
+      offscreen.style.background = '#F7F7F5';
+      offscreen.appendChild(clone);
+      document.body.appendChild(offscreen);
+
+      // Dynamically import html2pdf
+      const html2pdfModule = await import('html2pdf.js');
+
+      const opt = {
+        margin: [10, 10, 10, 10] as [number, number, number, number],
+        filename: `lumenscope-report-${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.95 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          // Tell html2canvas to NOT parse any external stylesheets
+          // since all styles are already inlined
+          ignoreElements: (el: HTMLElement) => {
+            return el.tagName === 'LINK' && el.getAttribute('rel') === 'stylesheet';
+          },
+        },
+        jsPDF: { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const },
+      };
+
+      await html2pdfModule.default().from(clone).set(opt).save();
+
+      // Clean up
+      document.body.removeChild(offscreen);
     } catch (pdfErr) {
       console.error('PDF export failed:', pdfErr);
+      alert('PDF export encountered an error. Please try again.');
     } finally {
-      // Restore styles after rendering finishes
-      sheetsToRestore.forEach(({ sheet, disabled }) => {
-        try {
-          sheet.disabled = disabled;
-        } catch (e) {}
-      });
-      tempStyles.forEach((el) => el.remove());
-      inlineStyleElements.forEach(({ el, originalStyle }) => {
-        el.setAttribute('style', originalStyle);
-      });
+      setExporting(false);
     }
   };
 
@@ -208,10 +122,15 @@ Generated: ${new Date(results.timestamp).toLocaleString()}`;
     <div className="bg-white border-t border-border-grey px-6 py-4 flex flex-wrap items-center justify-center gap-4 no-print shadow-sm sticky bottom-0 z-20">
       <button
         onClick={handleExportPDF}
-        className="px-4 py-2 bg-signal-blue text-white rounded font-sans text-xs font-semibold hover:bg-opacity-90 active:bg-opacity-95 focus:outline-none focus:ring-2 focus:ring-signal-blue flex items-center gap-1.5 transition-all"
+        disabled={exporting}
+        className="px-4 py-2 bg-signal-blue text-white rounded font-sans text-xs font-semibold hover:bg-opacity-90 active:bg-opacity-95 focus:outline-none focus:ring-2 focus:ring-signal-blue flex items-center gap-1.5 transition-all disabled:opacity-60"
       >
-        <FileDown className="w-4 h-4" />
-        Export PDF
+        {exporting ? (
+          <Loader2 className="w-4 h-4 animate-spin" />
+        ) : (
+          <FileDown className="w-4 h-4" />
+        )}
+        {exporting ? 'Exporting…' : 'Export PDF'}
       </button>
       <button
         onClick={handleExportJSON}
@@ -230,4 +149,70 @@ Generated: ${new Date(results.timestamp).toLocaleString()}`;
     </div>
   );
 };
+
+/**
+ * Build a compact inline style string from a CSSStyleDeclaration.
+ * Only includes properties that differ from defaults to keep the string manageable.
+ * Also converts any oklab/oklch color values to rgb fallbacks.
+ */
+function buildInlineStyle(computed: CSSStyleDeclaration): string {
+  // Key visual properties to capture
+  const props = [
+    'display', 'position', 'top', 'right', 'bottom', 'left',
+    'width', 'height', 'min-width', 'min-height', 'max-width', 'max-height',
+    'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+    'padding', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+    'border', 'border-top', 'border-right', 'border-bottom', 'border-left',
+    'border-radius', 'border-color', 'border-width', 'border-style',
+    'background', 'background-color', 'background-image', 'background-size',
+    'background-position', 'background-repeat',
+    'color', 'font-family', 'font-size', 'font-weight', 'font-style',
+    'line-height', 'letter-spacing', 'text-align', 'text-decoration',
+    'text-transform', 'white-space', 'word-break', 'overflow-wrap',
+    'overflow', 'overflow-x', 'overflow-y',
+    'opacity', 'visibility',
+    'flex', 'flex-direction', 'flex-wrap', 'flex-grow', 'flex-shrink', 'flex-basis',
+    'justify-content', 'align-items', 'align-self', 'gap', 'row-gap', 'column-gap',
+    'grid-template-columns', 'grid-template-rows', 'grid-column', 'grid-row',
+    'box-shadow', 'text-shadow',
+    'z-index', 'cursor',
+    'transform', 'transition',
+    'box-sizing',
+    'vertical-align',
+    'list-style', 'list-style-type',
+    'fill', 'stroke',
+    'clip-path',
+    'object-fit', 'object-position',
+  ];
+
+  const parts: string[] = [];
+  for (const prop of props) {
+    try {
+      const val = computed.getPropertyValue(prop);
+      if (val && val !== '' && val !== 'initial' && val !== 'normal' && val !== 'none' && val !== 'auto') {
+        // Convert any residual oklab/oklch references to safe values
+        let safeVal = val;
+        if (val.includes('oklab') || val.includes('oklch')) {
+          safeVal = convertModernColors(val);
+        }
+        parts.push(`${prop}: ${safeVal}`);
+      }
+    } catch (e) {
+      // Skip unreadable properties
+    }
+  }
+  return parts.join('; ');
+}
+
+/**
+ * Simple fallback converter for any oklab/oklch color strings
+ * that getComputedStyle might return.
+ */
+function convertModernColors(css: string): string {
+  // Replace oklch(...) and oklab(...) with a neutral fallback
+  return css
+    .replace(/oklch\([^)]*\)/gi, 'rgb(107, 114, 128)')
+    .replace(/oklab\([^)]*\)/gi, 'rgb(107, 114, 128)');
+}
+
 export default ExportBar;

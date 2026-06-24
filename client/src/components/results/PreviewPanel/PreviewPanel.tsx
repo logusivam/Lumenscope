@@ -30,14 +30,33 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ url, htmlContent, hi
     opacity: 1 !important;
     visibility: visible !important;
   }
+  /* Override common JS-dependent visibility patterns */
+  .lazyload, .lazy, [data-src] {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  /* Prevent animations that require JS to settle */
+  *, *::before, *::after {
+    animation-play-state: paused !important;
+    transition: none !important;
+  }
 </style>
 `;
 
-    if (!/<base\s+/i.test(htmlContent)) {
+    // Extract origin for base URL
+    let baseUrl = url;
+    try {
+      const parsed = new URL(url);
+      baseUrl = parsed.origin + parsed.pathname;
+    } catch (e) {
+      // Use url as-is
+    }
+
+    if (!/\<base\s+/i.test(htmlContent)) {
       if (/<head[^>]*>/i.test(htmlContent)) {
-        processedHtml = htmlContent.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${url}">\n${overrideStyle}`);
+        processedHtml = htmlContent.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${baseUrl}">\n${overrideStyle}`);
       } else {
-        processedHtml = `<base href="${url}">\n${overrideStyle}\n` + htmlContent;
+        processedHtml = `<base href="${baseUrl}">\n${overrideStyle}\n` + htmlContent;
       }
     } else {
       if (/<head[^>]*>/i.test(htmlContent)) {
@@ -69,6 +88,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ url, htmlContent, hi
           srcDoc={processedHtml}
           title="Scanned Website Preview"
           className="w-full h-full border-none"
+          sandbox="allow-same-origin"
         />
         {showHighlights && (
           <HighlightOverlay iframeRef={iframeRef} selectors={highlightSelectors} />

@@ -46,13 +46,17 @@ export const Preloader: React.FC = () => {
           {/* Spinning gradient ring */}
           <div className="absolute inset-0 rounded-full border-4 border-t-signal-blue border-r-transparent border-b-signal-blue/30 border-l-transparent animate-spin" style={{ animationDuration: '1.2s' }} />
           
-          {/* Logo icon inside - pulsing smoothly instead of bouncing */}
-          <img
-            src={logoIcon}
-            alt="Lumenscope Icon"
-            className="w-14 h-14 object-contain relative z-10 animate-pulse"
+          {/* Logo icon — fully covering the circle */}
+          <div
+            className="w-20 h-20 rounded-full relative z-10 animate-pulse overflow-hidden"
             style={{ animationDuration: '2s' }}
-          />
+          >
+            <img
+              src={logoIcon}
+              alt="Lumenscope Icon"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
 
         {/* Text and animated progress */}

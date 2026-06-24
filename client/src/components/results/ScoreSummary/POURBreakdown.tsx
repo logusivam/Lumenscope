@@ -21,9 +21,18 @@ export const POURBreakdown: React.FC<POURBreakdownProps> = ({ scores }) => {
     return 'var(--color-severity-critical)';
   };
 
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div className="w-full h-40 bg-paper/20 rounded" />;
+  }
+
   return (
     <div className="w-full h-40">
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <BarChart
           data={data}
           layout="vertical"

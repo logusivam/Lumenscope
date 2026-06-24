@@ -18,7 +18,7 @@ export async function runScan(url: string, htmlContent: string): Promise<AxeResu
           throw new Error('Failed to access iframe document context');
         }
 
-        const results = await axe.run(iframeDoc, {
+        const results = await axe.run(iframe, {
           runOnly: {
             type: 'tag',
             values: ['wcag2a', 'wcag2aa', 'wcag2aaa']
@@ -47,7 +47,7 @@ export async function runScan(url: string, htmlContent: string): Promise<AxeResu
   });
 }
 
-export async function scanUrl(url: string, apiBaseUrl: string = 'http://localhost:3001'): Promise<AxeResults> {
+export async function scanUrl(url: string, apiBaseUrl: string = 'http://localhost:3001'): Promise<{ results: AxeResults; html: string }> {
   const fetchUrl = `${apiBaseUrl}/api/fetch?url=${encodeURIComponent(url)}`;
   const response = await fetch(fetchUrl);
   
@@ -57,5 +57,6 @@ export async function scanUrl(url: string, apiBaseUrl: string = 'http://localhos
   }
 
   const { html } = await response.json();
-  return runScan(url, html);
+  const results = await runScan(url, html);
+  return { results, html };
 }

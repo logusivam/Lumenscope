@@ -24,9 +24,18 @@ export const OverallScoreGauge: React.FC<OverallScoreGaugeProps> = ({ score }) =
     }
   ];
 
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div className="w-full h-48 bg-paper/20 rounded flex items-center justify-center" />;
+  }
+
   return (
     <div className="w-full h-48 flex items-center justify-center relative">
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <RadialBarChart
           cx="50%"
           cy="55%"

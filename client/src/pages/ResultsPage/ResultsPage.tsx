@@ -64,6 +64,7 @@ export const ResultsPage: React.FC = () => {
             onSelectLevel={setSelectedLevel}
           />
           <PreviewPanel
+            url={results.url}
             htmlContent={htmlContent || `<html><body><div style="padding: 20px; font-family: sans-serif; color: #6B7280;">No raw preview content cached. Perform a scan to view layout.</div></body></html>`}
             highlightSelectors={highlightSelectors}
           />

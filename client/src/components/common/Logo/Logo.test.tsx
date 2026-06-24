@@ -4,15 +4,16 @@ import { Logo } from './Logo';
 import axe from 'axe-core';
 
 describe('Logo Component', () => {
-  it('renders full variant with text', () => {
+  it('renders full variant image', () => {
     render(<Logo variant="full" />);
-    expect(screen.getByText('Lumen')).toBeDefined();
-    expect(screen.getByText('scope')).toBeDefined();
+    const img = screen.getByAltText('Lumenscope Logo');
+    expect(img).toBeDefined();
   });
 
-  it('renders icon only variant', () => {
+  it('renders icon only variant image', () => {
     render(<Logo variant="icon" />);
-    expect(screen.queryByText('Lumen')).toBeNull();
+    const img = screen.getByAltText('Lumenscope Icon');
+    expect(img).toBeDefined();
   });
 
   it('passes accessibility audits', async () => {

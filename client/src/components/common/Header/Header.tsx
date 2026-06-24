@@ -4,7 +4,7 @@ import { Logo } from '../Logo';
 
 export const Header: React.FC = () => {
   return (
-    <header className="border-b border-border-grey bg-paper px-6 py-4 flex items-center justify-between no-print">
+    <header className="border-b border-border-grey bg-paper px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between no-print">
       <NavLink to="/" aria-label="Lumenscope Home">
         <Logo variant="full" />
       </NavLink>

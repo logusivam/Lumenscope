@@ -11,8 +11,8 @@ export const HomePage: React.FC = () => {
 
   const handleAuditSubmit = async (url: string) => {
     try {
-      const results = await scan(url);
-      navigate('/results', { state: { results } });
+      const { results, html } = await scan(url);
+      navigate('/results', { state: { results, html } });
     } catch (err) {
       // Error is captured in useScan state and rendered below the form
     }

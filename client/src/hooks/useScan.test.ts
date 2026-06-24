@@ -13,7 +13,7 @@ describe('useScan hook', () => {
 
   it('should handle successful scan', async () => {
     const mockResults = { url: 'http://test.com', timestamp: '', passes: [], violations: [], incomplete: [], inapplicable: [] };
-    const scanSpy = vi.spyOn(scanEngine, 'scanUrl').mockResolvedValue(mockResults);
+    const scanSpy = vi.spyOn(scanEngine, 'scanUrl').mockResolvedValue({ results: mockResults, html: '<html></html>' });
 
     const { result } = renderHook(() => useScan());
     

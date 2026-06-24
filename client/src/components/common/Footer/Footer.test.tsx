@@ -4,10 +4,13 @@ import { Footer } from './Footer';
 import axe from 'axe-core';
 
 describe('Footer Component', () => {
-  it('renders copyright and github link', () => {
+  it('renders copyright and redesign elements', () => {
     render(<Footer />);
-    expect(screen.getByText(/Built by Dark/)).toBeDefined();
-    expect(screen.getByRole('link', { name: /github/i })).toBeDefined();
+    expect(screen.getByText(/Lumenscope/)).toBeDefined();
+    expect(screen.getByText(/logusivam vision/i)).toBeDefined();
+    expect(screen.getByText('Terms & Conditions')).toBeDefined();
+    expect(screen.getByText('Privacy Policy')).toBeDefined();
+    expect(screen.getByText('Contact')).toBeDefined();
   });
 
   it('passes accessibility audits', async () => {

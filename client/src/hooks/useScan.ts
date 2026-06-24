@@ -12,9 +12,9 @@ export function useScan(apiBaseUrl: string = 'http://localhost:3001') {
   const scan = async (url: string) => {
     setState({ status: 'scanning', results: null, error: null });
     try {
-      const results = await scanUrl(url, apiBaseUrl);
+      const { results, html } = await scanUrl(url, apiBaseUrl);
       setState({ status: 'success', results, error: null });
-      return results;
+      return { results, html };
     } catch (err: any) {
       const message = err.message || 'An error occurred during the scan';
       setState({ status: 'error', results: null, error: message });

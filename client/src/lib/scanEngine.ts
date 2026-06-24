@@ -4,11 +4,16 @@ import { AxeResults } from '../types/axe';
 export async function runScan(url: string, htmlContent: string): Promise<AxeResults> {
   return new Promise((resolve, reject) => {
     const iframe = document.createElement('iframe');
-    iframe.style.position = 'absolute';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
+    // The iframe must be visible and have real dimensions for axe-core
+    // to properly analyse the content. Axe-core skips hidden/zero-size elements.
+    iframe.style.position = 'fixed';
+    iframe.style.top = '0';
+    iframe.style.left = '-10000px';  // Off-screen but still rendered
+    iframe.style.width = '1280px';
+    iframe.style.height = '900px';
     iframe.style.border = 'none';
-    iframe.style.visibility = 'hidden';
+    iframe.style.opacity = '0';      // Invisible to user but rendered by browser
+    iframe.style.pointerEvents = 'none';
     document.body.appendChild(iframe);
 
     iframe.onload = async () => {
@@ -18,7 +23,20 @@ export async function runScan(url: string, htmlContent: string): Promise<AxeResu
           throw new Error('Failed to access iframe document context');
         }
 
-        const results = await axe.run(iframe, {
+        // Inject axe-core source into the iframe and run it there.
+        // This ensures axe analyses the content as a real document,
+        // not as a child element of the parent page.
+        const axeScript = iframeDoc.createElement('script');
+        axeScript.textContent = axe.source;
+        iframeDoc.head.appendChild(axeScript);
+
+        // Access the injected axe instance inside the iframe
+        const iframeAxe = (iframe.contentWindow as any).axe;
+        if (!iframeAxe) {
+          throw new Error('Failed to inject axe-core into iframe context');
+        }
+
+        const results = await iframeAxe.run(iframeDoc, {
           runOnly: {
             type: 'tag',
             values: ['wcag2a', 'wcag2aa', 'wcag2aaa']

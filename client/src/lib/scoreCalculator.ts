@@ -10,6 +10,23 @@ const IMPACT_WEIGHTS: Record<string, number> = {
   minor: 1
 };
 
+/**
+ * Calculate an accessibility score from 0–100 based on axe-core violations.
+ * 
+ * Uses a logarithmic decay formula so that:
+ *  - 0 violations = 100
+ *  - A handful of minor violations ≈ 85–95 (good site)
+ *  - Moderate issues ≈ 50–80 (average site)
+ *  - Many critical/serious violations ≈ 0–40 (bad site)
+ * 
+ * The raw linear deduction (weight × nodeCount per violation) is converted
+ * via: score = 100 × e^(-deduction / SCALE_FACTOR)
+ * 
+ * This avoids the problem where the linear formula `100 - deduction` bottoms
+ * out at 0 for any site with more than ~10 critical violation nodes.
+ */
+const SCALE_FACTOR = 80; // Controls how quickly score drops; higher = more lenient
+
 export function calculateScore(violations: AxeViolation[]): ScoreResult {
   let overallDeduction = 0;
   let perceivableDeduction = 0;
@@ -45,13 +62,22 @@ export function calculateScore(violations: AxeViolation[]): ScoreResult {
     else if (level === 'AAA') wcagCounts.AAA += nodeCount;
   }
 
-  const score = Math.max(0, 100 - overallDeduction);
+  // Exponential decay scoring — provides meaningful differentiation
+  // Examples with SCALE_FACTOR = 80:
+  //   deduction   0 → score 100
+  //   deduction  10 → score  88
+  //   deduction  30 → score  69
+  //   deduction  60 → score  47
+  //   deduction 100 → score  29
+  //   deduction 200 → score   8
+  //   deduction 400 → score   1
+  const score = Math.round(100 * Math.exp(-overallDeduction / SCALE_FACTOR));
   
   const pour = {
-    perceivable: Math.max(0, 100 - perceivableDeduction),
-    operable: Math.max(0, 100 - operableDeduction),
-    understandable: Math.max(0, 100 - understandableDeduction),
-    robust: Math.max(0, 100 - robustDeduction)
+    perceivable: Math.round(100 * Math.exp(-perceivableDeduction / SCALE_FACTOR)),
+    operable: Math.round(100 * Math.exp(-operableDeduction / SCALE_FACTOR)),
+    understandable: Math.round(100 * Math.exp(-understandableDeduction / SCALE_FACTOR)),
+    robust: Math.round(100 * Math.exp(-robustDeduction / SCALE_FACTOR))
   };
 
   return {

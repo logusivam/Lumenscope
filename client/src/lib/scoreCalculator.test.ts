@@ -28,8 +28,9 @@ describe('scoreCalculator', () => {
     ];
 
     const result = calculateScore(mockViolations);
-    expect(result.score).toBe(70); // 100 - (10 * 3) = 70
-    expect(result.pour.perceivable).toBe(70);
+    // Exponential decay: Math.round(100 * Math.exp(-30 / 80)) = 69
+    expect(result.score).toBe(69);
+    expect(result.pour.perceivable).toBe(69);
     expect(result.wcag.A).toBe(3);
   });
 });

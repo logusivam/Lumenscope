@@ -8,6 +8,7 @@ interface ViolationPanelProps {
   violations: AxeViolation[];
   onHighlight: (selector: string[]) => void;
   selectedLevel: 'A' | 'AA' | 'AAA' | 'all';
+  highlightSelectors?: string[][] | null;
 }
 
 const SEVERITY_ORDER: Record<string, number> = {
@@ -20,7 +21,8 @@ const SEVERITY_ORDER: Record<string, number> = {
 export const ViolationPanel: React.FC<ViolationPanelProps> = ({
   violations,
   onHighlight,
-  selectedLevel
+  selectedLevel,
+  highlightSelectors = null
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [severityFilter, setSeverityFilter] = useState('all');
@@ -70,7 +72,12 @@ export const ViolationPanel: React.FC<ViolationPanelProps> = ({
           </div>
         ) : (
           filteredViolations.map((v) => (
-            <ViolationCard key={v.id} violation={v} onHighlight={onHighlight} />
+            <ViolationCard
+              key={v.id}
+              violation={v}
+              onHighlight={onHighlight}
+              highlightSelectors={highlightSelectors}
+            />
           ))
         )}
       </div>

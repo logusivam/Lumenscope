@@ -4,6 +4,7 @@ import axe from 'axe-core';
 
 vi.mock('axe-core', () => ({
   default: {
+    source: 'window.axe = { run: () => Promise.resolve({ passes: [], violations: [], incomplete: [], inapplicable: [] }) };',
     run: vi.fn().mockResolvedValue({
       passes: [],
       violations: [],

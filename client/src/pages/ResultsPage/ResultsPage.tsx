@@ -79,6 +79,7 @@ export const ResultsPage: React.FC = () => {
             violations={results.violations}
             onHighlight={handleHighlight}
             selectedLevel={selectedLevel}
+            highlightSelectors={highlightSelectors}
           />
         </div>
       </main>

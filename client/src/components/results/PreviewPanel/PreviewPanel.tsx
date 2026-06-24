@@ -34,6 +34,28 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ url, htmlContent, hi
     opacity: 1 !important;
     visibility: visible !important;
   }
+  /* Highlight style for elements */
+  .lumenscope-highlight {
+    outline: 3px dashed #ef4444 !important;
+    outline-offset: 4px !important;
+    background-color: rgba(239, 68, 68, 0.15) !important;
+    transition: outline-color 0.2s ease, background-color 0.2s ease !important;
+    animation: lumenscope-pulse-highlight 2s infinite !important;
+  }
+  @keyframes lumenscope-pulse-highlight {
+    0% {
+      outline-color: rgba(239, 68, 68, 1);
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.4) !important;
+    }
+    50% {
+      outline-color: rgba(239, 68, 68, 0.5);
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.1) !important;
+    }
+    100% {
+      outline-color: rgba(239, 68, 68, 1);
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.4) !important;
+    }
+  }
 </style>
 `;
 

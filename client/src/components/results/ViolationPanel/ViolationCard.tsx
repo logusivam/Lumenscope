@@ -7,12 +7,14 @@ interface ViolationCardProps {
   violation: AxeViolation;
   onHighlight: (selector: string[]) => void;
   isHighlighted?: boolean;
+  highlightSelectors?: string[][] | null;
 }
 
 export const ViolationCard: React.FC<ViolationCardProps> = ({
   violation,
   onHighlight,
-  isHighlighted = false
+  isHighlighted = false,
+  highlightSelectors = null
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -117,20 +119,25 @@ export const ViolationCard: React.FC<ViolationCardProps> = ({
                       <p className="mt-1 leading-relaxed">{node.failureSummary}</p>
                     </div>
                   )}
-                  {node.target && node.target.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => onHighlight(node.target)}
-                      className={`mt-1 self-start px-3 py-1 text-xs font-semibold rounded flex items-center gap-1.5 transition-all border focus:outline-none focus:ring-2 focus:ring-signal-blue ${
-                        isHighlighted
-                          ? 'bg-signal-blue text-white border-signal-blue'
-                          : 'bg-white text-signal-blue border-border-grey hover:bg-paper/40'
-                      }`}
-                    >
-                      <Highlighter className="w-3.5 h-3.5" />
-                      Highlight element
-                    </button>
-                  )}
+                  {node.target && node.target.length > 0 && (() => {
+                    const isNodeHighlighted = highlightSelectors?.some(
+                      (sel) => sel.join(' ') === node.target.join(' ')
+                    ) || isHighlighted;
+                    return (
+                      <button
+                        type="button"
+                        onClick={() => onHighlight(node.target)}
+                        className={`mt-1 self-start px-3 py-1 text-xs font-semibold rounded flex items-center gap-1.5 transition-all border focus:outline-none focus:ring-2 focus:ring-signal-blue ${
+                          isNodeHighlighted
+                            ? 'bg-signal-blue text-white border-signal-blue hover:bg-signal-blue/90'
+                            : 'bg-white text-signal-blue border-border-grey hover:bg-paper/40'
+                        }`}
+                      >
+                        <Highlighter className="w-3.5 h-3.5" />
+                        {isNodeHighlighted ? 'Highlighted' : 'Highlight element'}
+                      </button>
+                    );
+                  })()}
                 </div>
               ))}
             </div>

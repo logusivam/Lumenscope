@@ -24,9 +24,8 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ url, htmlContent, hi
     visibility: hidden !important;
     pointer-events: none !important;
   }
-  /* Force display of hidden content wrappers */
+  /* Ensure key content wrappers are visible (without overriding display type) */
   body, html, #root, #app, #__next, #main-content, main, [id*="page-wrapper"], [class*="page-wrapper"] {
-    display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
   }
@@ -34,11 +33,6 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ url, htmlContent, hi
   .lazyload, .lazy, [data-src] {
     opacity: 1 !important;
     visibility: visible !important;
-  }
-  /* Prevent animations that require JS to settle */
-  *, *::before, *::after {
-    animation-play-state: paused !important;
-    transition: none !important;
   }
 </style>
 `;
@@ -88,7 +82,6 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ url, htmlContent, hi
           srcDoc={processedHtml}
           title="Scanned Website Preview"
           className="w-full h-full border-none"
-          sandbox="allow-same-origin"
         />
         {showHighlights && (
           <HighlightOverlay iframeRef={iframeRef} selectors={highlightSelectors} />

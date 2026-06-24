@@ -49,21 +49,45 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
     };
 
     const convertOklchAndOklab = (css: string): string => {
-      return css
-        .replace(/oklch\(\s*([0-9.]+%?)\s+([0-9.]+)\s+([0-9.]+)(?:\s*\/\s*([0-9.]+%?))?\s*\)/gi, (match, l, c, h, a) => {
-          const lVal = l.endsWith('%') ? parseFloat(l) / 100 : parseFloat(l);
-          const cVal = parseFloat(c);
-          const hVal = parseFloat(h);
-          const aVal = a ? (a.endsWith('%') ? parseFloat(a) / 100 : parseFloat(a)) : undefined;
-          return oklchToRgb(lVal, cVal, hVal, aVal);
-        })
-        .replace(/oklab\(\s*([0-9.]+%?)\s+([0-9.-]+)\s+([0-9.-]+)(?:\s*\/\s*([0-9.]+%?))?\s*\)/gi, (match, l, aVal, bVal, a) => {
-          const lVal = l.endsWith('%') ? parseFloat(l) / 100 : parseFloat(l);
-          const aNum = parseFloat(aVal);
-          const bNum = parseFloat(bVal);
-          const aVal2 = a ? (a.endsWith('%') ? parseFloat(a) / 100 : parseFloat(a)) : undefined;
-          return oklabToRgb(lVal, aNum, bNum, aVal2);
-        });
+      let result = css.replace(/oklch\(([^)]+)\)/gi, (match, content) => {
+        try {
+          const parts = content.split(/[\s,/]+/).filter(Boolean);
+          if (parts[0] === 'from') {
+            return 'rgb(45, 91, 255)'; // theme accent fallback for relative color
+          }
+          if (parts.length >= 3) {
+            const l = parts[0].endsWith('%') ? parseFloat(parts[0]) / 100 : parseFloat(parts[0]);
+            const c = parseFloat(parts[1]);
+            const h = parseFloat(parts[2]);
+            const a = parts[3] ? (parts[3].endsWith('%') ? parseFloat(parts[3]) / 100 : parseFloat(parts[3])) : undefined;
+            if (!isNaN(l) && !isNaN(c) && !isNaN(h)) {
+              return oklchToRgb(l, c, h, a);
+            }
+          }
+        } catch (e) {}
+        return 'rgb(45, 91, 255)';
+      });
+
+      result = result.replace(/oklab\(([^)]+)\)/gi, (match, content) => {
+        try {
+          const parts = content.split(/[\s,/]+/).filter(Boolean);
+          if (parts[0] === 'from') {
+            return 'rgb(75, 85, 99)'; // neutral fallback
+          }
+          if (parts.length >= 3) {
+            const l = parts[0].endsWith('%') ? parseFloat(parts[0]) / 100 : parseFloat(parts[0]);
+            const aVal = parseFloat(parts[1]);
+            const bVal = parseFloat(parts[2]);
+            const a = parts[3] ? (parts[3].endsWith('%') ? parseFloat(parts[3]) / 100 : parseFloat(parts[3])) : undefined;
+            if (!isNaN(l) && !isNaN(aVal) && !isNaN(bVal)) {
+              return oklabToRgb(l, aVal, bVal, a);
+            }
+          }
+        } catch (e) {}
+        return 'rgb(75, 85, 99)';
+      });
+
+      return result;
     };
 
     // Save and prepare styles
@@ -98,9 +122,23 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
       el.innerHTML = convertOklchAndOklab(el.innerHTML);
     });
 
+    const element = document.getElementById('results-dashboard');
+    const inlineStyleElements: { el: HTMLElement; originalStyle: string }[] = [];
+    if (element) {
+      const allDashboardEls = Array.from(element.querySelectorAll('*')) as HTMLElement[];
+      allDashboardEls.forEach((el) => {
+        if (el.getAttribute && el.getAttribute('style')) {
+          const original = el.getAttribute('style') || '';
+          if (original.includes('oklch') || original.includes('oklab')) {
+            inlineStyleElements.push({ el, originalStyle: original });
+            el.setAttribute('style', convertOklchAndOklab(original));
+          }
+        }
+      });
+    }
+
     // Dynamic import of html2pdf.js client-side only
     const html2pdfModule = await import('html2pdf.js');
-    const element = document.getElementById('results-dashboard');
     if (!element) {
       // Restore styles in case of missing target
       styleElements.forEach((el, index) => {
@@ -110,6 +148,9 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
         link.disabled = false;
       });
       tempStyles.forEach((el) => el.remove());
+      inlineStyleElements.forEach(({ el, originalStyle }) => {
+        el.setAttribute('style', originalStyle);
+      });
       return;
     }
 
@@ -134,6 +175,9 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
         link.disabled = false;
       });
       tempStyles.forEach((el) => el.remove());
+      inlineStyleElements.forEach(({ el, originalStyle }) => {
+        el.setAttribute('style', originalStyle);
+      });
     }
   };
 

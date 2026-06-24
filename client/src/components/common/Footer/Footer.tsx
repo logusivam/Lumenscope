@@ -42,19 +42,21 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Right side links */}
-        <div className="flex items-center justify-center md:justify-end gap-3 w-full md:w-64 font-sans font-medium">
+        <div className="flex items-center justify-center md:justify-end gap-2 min-[376px]:gap-3 w-full md:w-64 font-sans font-medium text-[10px] min-[376px]:text-xs whitespace-nowrap">
           <button
             onClick={() => setActiveModal('terms')}
             className="hover:text-signal-blue transition-colors focus:outline-none focus:underline"
           >
-            Terms & Conditions
+            <span className="hidden min-[376px]:inline">Terms & Conditions</span>
+            <span className="inline min-[376px]:hidden">Terms</span>
           </button>
           <span>&middot;</span>
           <button
             onClick={() => setActiveModal('privacy')}
             className="hover:text-signal-blue transition-colors focus:outline-none focus:underline"
           >
-            Privacy Policy
+            <span className="hidden min-[376px]:inline">Privacy Policy</span>
+            <span className="inline min-[376px]:hidden">Privacy</span>
           </button>
           <span>&middot;</span>
           <button

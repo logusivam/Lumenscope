@@ -33,12 +33,9 @@ export const ResultsPage: React.FC = () => {
 
   const handleRescan = async () => {
     try {
-      const newResults = await scan(results.url);
+      const { results: newResults, html: newHtml } = await scan(results.url);
       setResults(newResults);
-      // We can also fetch the html in proxy inside scan hook
-      const response = await fetch(`http://localhost:3001/api/fetch?url=${encodeURIComponent(results.url)}`);
-      const data = await response.json();
-      setHtmlContent(data.html);
+      setHtmlContent(newHtml);
       setHighlightSelectors(null);
     } catch (err) {
       console.error('Re-scan failed:', err);

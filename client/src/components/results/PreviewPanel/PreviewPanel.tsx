@@ -13,11 +13,37 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ url, htmlContent, hi
 
   let processedHtml = htmlContent;
   if (url && htmlContent) {
+    const overrideStyle = `
+<style id="lumenscope-preview-overrides">
+  /* Hide typical loaders/preloaders/spinners */
+  #preloader, .preloader, #loader, .loader, #loading, .loading, #loading-screen, .loading-screen,
+  [id*="loader-wrapper"], [class*="loader-wrapper"], [id*="loading-overlay"], [class*="loading-overlay"],
+  [id*="pre-loader"], [class*="pre-loader"], [id*="spinner"], [class*="spinner"] {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  /* Force display of hidden content wrappers */
+  body, html, #root, #app, #__next, #main-content, main, [id*="page-wrapper"], [class*="page-wrapper"] {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+</style>
+`;
+
     if (!/<base\s+/i.test(htmlContent)) {
       if (/<head[^>]*>/i.test(htmlContent)) {
-        processedHtml = htmlContent.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${url}">`);
+        processedHtml = htmlContent.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${url}">\n${overrideStyle}`);
       } else {
-        processedHtml = `<base href="${url}">\n` + htmlContent;
+        processedHtml = `<base href="${url}">\n${overrideStyle}\n` + htmlContent;
+      }
+    } else {
+      if (/<head[^>]*>/i.test(htmlContent)) {
+        processedHtml = htmlContent.replace(/<head([^>]*)>/i, `<head$1>\n${overrideStyle}`);
+      } else {
+        processedHtml = overrideStyle + htmlContent;
       }
     }
   }

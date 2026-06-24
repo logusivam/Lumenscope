@@ -38,13 +38,13 @@ export const ContrastCheckerPage: React.FC = () => {
               <label htmlFor="fg-color" className="block font-sans text-xs font-bold text-ink mb-2 uppercase tracking-wide">
                 Foreground Color (Text)
               </label>
-              <div className="flex gap-2">
+              <div className="flex flex-col min-[376px]:flex-row gap-2">
                 <input
                   id="fg-color-picker"
                   type="color"
                   value={foreground}
                   onChange={(e) => setForeground(e.target.value)}
-                  className="w-12 h-10 border border-border-grey rounded cursor-pointer p-0 bg-transparent"
+                  className="w-full min-[376px]:w-12 h-10 border border-border-grey rounded cursor-pointer p-0 bg-transparent"
                   aria-label="Foreground color picker"
                 />
                 <input
@@ -62,13 +62,13 @@ export const ContrastCheckerPage: React.FC = () => {
               <label htmlFor="bg-color" className="block font-sans text-xs font-bold text-ink mb-2 uppercase tracking-wide">
                 Background Color
               </label>
-              <div className="flex gap-2">
+              <div className="flex flex-col min-[376px]:flex-row gap-2">
                 <input
                   id="bg-color-picker"
                   type="color"
                   value={background}
                   onChange={(e) => setBackground(e.target.value)}
-                  className="w-12 h-10 border border-border-grey rounded cursor-pointer p-0 bg-transparent"
+                  className="w-full min-[376px]:w-12 h-10 border border-border-grey rounded cursor-pointer p-0 bg-transparent"
                   aria-label="Background color picker"
                 />
                 <input

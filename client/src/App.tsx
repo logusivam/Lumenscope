@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router';
 import { Layout } from './components/common/Layout';
+import { Preloader } from './components/common/Preloader';
 import HomePage from './pages/HomePage/HomePage';
 import ResultsPage from './pages/ResultsPage/ResultsPage';
 import ContrastCheckerPage from './pages/ContrastCheckerPage/ContrastCheckerPage';
@@ -10,6 +11,7 @@ import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
+      <Preloader />
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />

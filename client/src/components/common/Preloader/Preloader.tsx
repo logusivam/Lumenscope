@@ -37,8 +37,8 @@ export const Preloader: React.FC = () => {
         }
       `}</style>
 
-      <div className="relative flex flex-col items-center gap-6">
-        {/* Pulsing ring and rotating track around the logo */}
+      <div className="relative flex flex-col items-center gap-6 px-6 text-center max-w-sm">
+        {/* Pulsing ring and rotating track around the logo icon */}
         <div className="relative w-28 h-28 flex items-center justify-center">
           {/* Pulsing glowing background */}
           <div className="absolute inset-0 rounded-full bg-signal-blue/10 blur-xl animate-pulse" />
@@ -46,21 +46,18 @@ export const Preloader: React.FC = () => {
           {/* Spinning gradient ring */}
           <div className="absolute inset-0 rounded-full border-4 border-t-signal-blue border-r-transparent border-b-signal-blue/30 border-l-transparent animate-spin" style={{ animationDuration: '1.2s' }} />
           
-          {/* Logo icon inside */}
+          {/* Logo icon inside - pulsing smoothly instead of bouncing */}
           <img
             src={logoIcon}
             alt="Lumenscope Icon"
-            className="w-14 h-14 object-contain animate-bounce"
+            className="w-14 h-14 object-contain relative z-10 animate-pulse"
             style={{ animationDuration: '2s' }}
           />
         </div>
 
         {/* Text and animated progress */}
-        <div className="text-center space-y-1">
-          <h2 className="font-sans text-lg font-bold text-ink tracking-widest animate-pulse">
-            LUMENSCOPE
-          </h2>
-          <p className="font-sans text-[10px] text-minor-grey tracking-wider uppercase font-semibold">
+        <div className="space-y-1">
+          <p className="font-sans text-[10px] text-minor-grey tracking-widest uppercase font-semibold">
             Initializing Audit Dashboard
           </p>
         </div>

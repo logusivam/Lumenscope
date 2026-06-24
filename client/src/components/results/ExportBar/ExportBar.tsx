@@ -90,37 +90,38 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
       return result;
     };
 
-    // Save and prepare styles
-    const styleElements = Array.from(document.querySelectorAll('style'));
-    const originalStyles = styleElements.map((el) => el.innerHTML);
-
-    const linkElements = Array.from(document.querySelectorAll('link[rel="stylesheet"]')) as HTMLLinkElement[];
+    // Save original stylesheet disabled states and reconstruct combined CSS
+    const sheetsToRestore: { sheet: CSSStyleSheet; disabled: boolean }[] = [];
     const tempStyles: HTMLStyleElement[] = [];
+    let combinedCss = '';
 
-    // Process link stylesheets by fetching and converting
-    await Promise.all(
-      linkElements.map(async (link) => {
-        try {
-          const res = await fetch(link.href);
-          if (res.ok) {
-            let cssText = await res.text();
-            cssText = convertOklchAndOklab(cssText);
-            const tempStyle = document.createElement('style');
-            tempStyle.innerHTML = cssText;
-            document.head.appendChild(tempStyle);
-            tempStyles.push(tempStyle);
-            link.disabled = true;
-          }
-        } catch (err) {
-          console.warn('Failed to fetch stylesheet for PDF conversion', err);
+    Array.from(document.styleSheets).forEach((sheet) => {
+      try {
+        if (sheet.cssRules) {
+          const rulesText = Array.from(sheet.cssRules)
+            .map((rule) => rule.cssText)
+            .join('\n');
+          combinedCss += '\n' + rulesText;
+          sheetsToRestore.push({ sheet, disabled: sheet.disabled });
+          sheet.disabled = true;
         }
-      })
-    );
-
-    // Convert local style tags
-    styleElements.forEach((el) => {
-      el.innerHTML = convertOklchAndOklab(el.innerHTML);
+      } catch (e) {
+        // Cross-origin sheets or security boundaries - disable them to prevent html2canvas parsing errors
+        try {
+          sheetsToRestore.push({ sheet, disabled: sheet.disabled });
+          sheet.disabled = true;
+        } catch (e2) {}
+      }
     });
+
+    // Clean combined CSS
+    combinedCss = convertOklchAndOklab(combinedCss);
+
+    // Create a temporary stylesheet containing the converted styles
+    const tempStyle = document.createElement('style');
+    tempStyle.innerHTML = combinedCss;
+    document.head.appendChild(tempStyle);
+    tempStyles.push(tempStyle);
 
     const element = document.getElementById('results-dashboard');
     const inlineStyleElements: { el: HTMLElement; originalStyle: string }[] = [];
@@ -141,11 +142,10 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
     const html2pdfModule = await import('html2pdf.js');
     if (!element) {
       // Restore styles in case of missing target
-      styleElements.forEach((el, index) => {
-        el.innerHTML = originalStyles[index];
-      });
-      linkElements.forEach((link) => {
-        link.disabled = false;
+      sheetsToRestore.forEach(({ sheet, disabled }) => {
+        try {
+          sheet.disabled = disabled;
+        } catch (e) {}
       });
       tempStyles.forEach((el) => el.remove());
       inlineStyleElements.forEach(({ el, originalStyle }) => {
@@ -168,11 +168,10 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
       console.error('PDF export failed:', pdfErr);
     } finally {
       // Restore styles after rendering finishes
-      styleElements.forEach((el, index) => {
-        el.innerHTML = originalStyles[index];
-      });
-      linkElements.forEach((link) => {
-        link.disabled = false;
+      sheetsToRestore.forEach(({ sheet, disabled }) => {
+        try {
+          sheet.disabled = disabled;
+        } catch (e) {}
       });
       tempStyles.forEach((el) => el.remove());
       inlineStyleElements.forEach(({ el, originalStyle }) => {

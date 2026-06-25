@@ -40,7 +40,8 @@ export async function runScan(url: string, htmlContent: string): Promise<AxeResu
           runOnly: {
             type: 'tag',
             values: ['wcag2a', 'wcag2aa', 'wcag2aaa']
-          }
+          },
+          preload: false
         });
 
         document.body.removeChild(iframe);

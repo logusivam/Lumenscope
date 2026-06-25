@@ -44,7 +44,9 @@ export function calculateScore(violations: AxeViolation[]): ScoreResult {
     const impact = violation.impact || 'minor';
     const weight = IMPACT_WEIGHTS[impact] || 1;
     const nodeCount = violation.nodes ? violation.nodes.length : 0;
-    const deduction = weight * nodeCount;
+    // Cap the nodeCount multiplier at 5 per violation rule to prevent repeating
+    // template errors (e.g. 100 missing alt attributes) from driving the score to 0.
+    const deduction = weight * Math.min(nodeCount, 5);
 
     overallDeduction += deduction;
 

@@ -97,8 +97,11 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ url, htmlContent, hi
     // Strip <link rel="preload" as="script"> tags to prevent 404s for JS files
     // (scripts are stripped by stripScripts, but their preload hints remain and cause errors)
     processedHtml = processedHtml
-      .replace(/<link\b[^>]*\brel\s*=\s*['"](?:preload|modulepreload)['"][^>]*\bas\s*=\s*['"]script['"][^>]*\/?>/gi, '')
-      .replace(/<link\b[^>]*\bas\s*=\s*['"]script['"][^>]*\brel\s*=\s*['"](?:preload|modulepreload)['"][^>]*\/?>/gi, '');
+      .replace(/<link\b[^>]*\brel\s*=\s*['"](?:preload|modulepreload|prefetch)['"][^>]*\bas\s*=\s*['"]script['"][^>]*\/?>/gi, '')
+      .replace(/<link\b[^>]*\bas\s*=\s*['"]script['"][^>]*\brel\s*=\s*['"](?:preload|modulepreload|prefetch)['"][^>]*\/?>/gi, '')
+      .replace(/<link\b[^>]*\brel\s*=\s*['"](?:preload|modulepreload|prefetch)['"][^>]*\bhref\s*=\s*['"][^'"]*\.js[^'"]*['"][^>]*\/?>/gi, '')
+      .replace(/<link\b[^>]*\bhref\s*=\s*['"][^'"]*\.js[^'"]*['"][^>]*\brel\s*=\s*['"](?:preload|modulepreload|prefetch)['"][^>]*\/?>/gi, '')
+      .replace(/<link\b[^>]*\bhref\s*=\s*['"][^'"]*\.js[^'"]*['"][^>]*\/?>/gi, '');
 
     if (!/<base\s+/i.test(htmlContent)) {
       if (/<head[^>]*>/i.test(processedHtml)) {
@@ -141,7 +144,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ url, htmlContent, hi
         <iframe
           ref={iframeRef}
           srcDoc={processedHtml}
-          sandbox="allow-same-origin allow-forms"
+          sandbox="allow-same-origin allow-scripts allow-forms"
           title="Scanned Website Preview"
           className="w-full h-full border-none"
         />

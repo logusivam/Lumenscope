@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { validateUrl } from '../../../lib/urlValidator';
+import { X } from 'lucide-react';
 
 interface URLInputFormProps {
   onSubmit: (url: string) => void;
@@ -45,12 +46,25 @@ export const URLInputForm: React.FC<URLInputFormProps> = ({ onSubmit, isLoading 
             }}
             placeholder="https://example.com"
             disabled={isLoading}
-            className={`w-full px-4 py-3 bg-white border rounded-md text-ink placeholder-minor-grey focus:outline-none focus:ring-2 focus:ring-signal-blue transition-all ${
+            className={`w-full pl-4 pr-10 py-3 bg-white border rounded-md text-ink placeholder-minor-grey focus:outline-none focus:ring-2 focus:ring-signal-blue transition-all ${
               error ? 'border-severity-critical focus:ring-severity-critical' : 'border-border-grey'
             }`}
             aria-invalid={error ? 'true' : 'false'}
             aria-describedby={error ? 'url-error' : undefined}
           />
+          {url && !isLoading && (
+            <button
+              type="button"
+              onClick={() => {
+                setUrl('');
+                setError(null);
+              }}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-minor-grey hover:text-ink focus:outline-none"
+              aria-label="Clear input"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
         <button
           type="submit"

@@ -27,59 +27,106 @@ const IMPACT_WEIGHTS: Record<string, number> = {
  */
 const SCALE_FACTOR = 80; // Controls how quickly score drops; higher = more lenient
 
-export function calculateScore(violations: AxeViolation[]): ScoreResult {
-  let overallDeduction = 0;
-  let perceivableDeduction = 0;
-  let operableDeduction = 0;
-  let understandableDeduction = 0;
-  let robustDeduction = 0;
-
+export function calculateScore(violations: AxeViolation[], passes: AxeViolation[] = []): ScoreResult {
   const wcagCounts = {
     A: 0,
     AA: 0,
     AAA: 0
   };
 
+  // Populate WCAG node counts from violations
   for (const violation of violations) {
-    const impact = violation.impact || 'minor';
-    const weight = IMPACT_WEIGHTS[impact] || 1;
     const nodeCount = violation.nodes ? violation.nodes.length : 0;
-    // Cap the nodeCount multiplier at 5 per violation rule to prevent repeating
-    // template errors (e.g. 100 missing alt attributes) from driving the score to 0.
-    const deduction = weight * Math.min(nodeCount, 5);
-
-    overallDeduction += deduction;
-
-    // Map to POUR
-    const principle = getPourPrinciple(violation.tags);
-    if (principle === 'perceivable') perceivableDeduction += deduction;
-    else if (principle === 'operable') operableDeduction += deduction;
-    else if (principle === 'understandable') understandableDeduction += deduction;
-    else if (principle === 'robust') robustDeduction += deduction;
-
-    // Map to WCAG Level
     const level = getWcagLevel(violation.tags);
     if (level === 'A') wcagCounts.A += nodeCount;
     else if (level === 'AA') wcagCounts.AA += nodeCount;
     else if (level === 'AAA') wcagCounts.AAA += nodeCount;
   }
 
-  // Exponential decay scoring — provides meaningful differentiation
-  // Examples with SCALE_FACTOR = 80:
-  //   deduction   0 → score 100
-  //   deduction  10 → score  88
-  //   deduction  30 → score  69
-  //   deduction  60 → score  47
-  //   deduction 100 → score  29
-  //   deduction 200 → score   8
-  //   deduction 400 → score   1
-  const score = Math.round(100 * Math.exp(-overallDeduction / SCALE_FACTOR));
-  
+  if (passes.length === 0) {
+    // Fallback to exponential decay formula when passes list is empty (e.g. in tests)
+    let overallDeduction = 0;
+    let perceivableDeduction = 0;
+    let operableDeduction = 0;
+    let understandableDeduction = 0;
+    let robustDeduction = 0;
+
+    for (const violation of violations) {
+      const impact = violation.impact || 'minor';
+      const weight = IMPACT_WEIGHTS[impact] || 1;
+      const nodeCount = violation.nodes ? violation.nodes.length : 0;
+      const deduction = weight * Math.min(nodeCount, 5);
+
+      overallDeduction += deduction;
+
+      const principle = getPourPrinciple(violation.tags);
+      if (principle === 'perceivable') perceivableDeduction += deduction;
+      else if (principle === 'operable') operableDeduction += deduction;
+      else if (principle === 'understandable') understandableDeduction += deduction;
+      else if (principle === 'robust') robustDeduction += deduction;
+    }
+
+    const score = Math.round(100 * Math.exp(-overallDeduction / SCALE_FACTOR));
+    const pour = {
+      perceivable: Math.round(100 * Math.exp(-perceivableDeduction / SCALE_FACTOR)),
+      operable: Math.round(100 * Math.exp(-operableDeduction / SCALE_FACTOR)),
+      understandable: Math.round(100 * Math.exp(-understandableDeduction / SCALE_FACTOR)),
+      robust: Math.round(100 * Math.exp(-robustDeduction / SCALE_FACTOR))
+    };
+
+    return { score, pour, wcag: wcagCounts };
+  }
+
+  // Industry Standard Lighthouse-Style Weighted Rule Scoring
+  let totalOverallWeight = 0;
+  let passedOverallWeight = 0;
+
+  const categories = {
+    perceivable: { total: 0, passed: 0 },
+    operable: { total: 0, passed: 0 },
+    understandable: { total: 0, passed: 0 },
+    robust: { total: 0, passed: 0 }
+  };
+
+  const processRule = (rule: AxeViolation, isPassed: boolean) => {
+    const impact = rule.impact || 'moderate';
+    const weight = IMPACT_WEIGHTS[impact] || 2;
+    const principle = getPourPrinciple(rule.tags);
+
+    // Update category weights
+    categories[principle].total += weight;
+    if (isPassed) {
+      categories[principle].passed += weight;
+    }
+
+    // Update overall weights
+    totalOverallWeight += weight;
+    if (isPassed) {
+      passedOverallWeight += weight;
+    }
+  };
+
+  // Process all rules
+  violations.forEach((rule) => processRule(rule, false));
+  passes.forEach((rule) => processRule(rule, true));
+
+  const score = totalOverallWeight > 0 
+    ? Math.round((passedOverallWeight / totalOverallWeight) * 100) 
+    : 100;
+
   const pour = {
-    perceivable: Math.round(100 * Math.exp(-perceivableDeduction / SCALE_FACTOR)),
-    operable: Math.round(100 * Math.exp(-operableDeduction / SCALE_FACTOR)),
-    understandable: Math.round(100 * Math.exp(-understandableDeduction / SCALE_FACTOR)),
-    robust: Math.round(100 * Math.exp(-robustDeduction / SCALE_FACTOR))
+    perceivable: categories.perceivable.total > 0 
+      ? Math.round((categories.perceivable.passed / categories.perceivable.total) * 100) 
+      : 100,
+    operable: categories.operable.total > 0 
+      ? Math.round((categories.operable.passed / categories.operable.total) * 100) 
+      : 100,
+    understandable: categories.understandable.total > 0 
+      ? Math.round((categories.understandable.passed / categories.understandable.total) * 100) 
+      : 100,
+    robust: categories.robust.total > 0 
+      ? Math.round((categories.robust.passed / categories.robust.total) * 100) 
+      : 100
   };
 
   return {

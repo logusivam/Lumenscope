@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { URLInputForm } from '../../components/home/URLInputForm';
 import { ScanProgressOverlay } from '../../components/results/ScanProgressOverlay';
 import { useScan } from '../../hooks/useScan';
-import { ArrowRight, Eye, ShieldAlert, Zap } from 'lucide-react';
+import { ArrowRight, Eye, ShieldAlert, Zap, HelpCircle, CheckCircle2, ListChecks, HeartHandshake, BookOpen, Download } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -44,6 +44,165 @@ export const HomePage: React.FC = () => {
             </p>
           </div>
         )}
+      </section>
+
+      <hr className="border-t border-border-grey" />
+
+      {/* What Problem Does This Page Solve? */}
+      <section className="max-w-6xl mx-auto w-full px-6 py-16">
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <h2 className="font-sans text-2xl font-bold text-ink mb-3">
+            What Problem Does Lumenscope Solve?
+          </h2>
+          <p className="font-sans text-sm text-minor-grey leading-relaxed">
+            The web is built for everyone, yet over 1 billion people experience accessibility barriers. Lumenscope translates dense, complex guidelines into simple, actionable visual instructions.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-white border border-border-grey rounded-md p-6 flex gap-4">
+            <div className="w-10 h-10 bg-severity-critical/10 text-severity-critical-text rounded-full flex items-center justify-center shrink-0">
+              <ShieldAlert className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-sans text-base font-bold text-ink mb-1">Curing "Web Exclusion"</h3>
+              <p className="font-sans text-xs text-minor-grey leading-relaxed">
+                Most websites suffer from missing image descriptions, confusing forms, and invisible color combinations, leaving millions of screen reader users and visually impaired people behind.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white border border-border-grey rounded-md p-6 flex gap-4">
+            <div className="w-10 h-10 bg-signal-blue/10 text-signal-blue rounded-full flex items-center justify-center shrink-0">
+              <HelpCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-sans text-base font-bold text-ink mb-1">Demystifying WCAG Compliance</h3>
+              <p className="font-sans text-xs text-minor-grey leading-relaxed">
+                Accessibility specs (WCAG 2.1/2.2) are notoriously dry, dense, and hard to interpret. We break down rules into clear, plain-English steps so you know exactly how to fix issues.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <hr className="border-t border-border-grey" />
+
+      {/* Key Features & Capabilities */}
+      <section className="max-w-6xl mx-auto w-full px-6 py-16">
+        <h2 className="font-sans text-2xl font-bold text-ink text-center mb-12">
+          Key Features & Capabilities
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-white border border-border-grey rounded-md p-6">
+            <ListChecks className="w-8 h-8 text-signal-blue mb-3" />
+            <h3 className="font-sans text-base font-bold text-ink mb-2">axe-Core Scan Engine</h3>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed">
+              Scan any live webpage immediately against strict A, AA, and AAA conformance rules.
+            </p>
+          </div>
+
+          <div className="bg-white border border-border-grey rounded-md p-6">
+            <Eye className="w-8 h-8 text-signal-blue mb-3" />
+            <h3 className="font-sans text-base font-bold text-ink mb-2">Live Visual Highlights</h3>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed">
+              Overlay dotted borders and color highlights directly inside the live page preview.
+            </p>
+          </div>
+
+          <div className="bg-white border border-border-grey rounded-md p-6">
+            <Zap className="w-8 h-8 text-signal-blue mb-3" />
+            <h3 className="font-sans text-base font-bold text-ink mb-2">Industry Standard Scoring</h3>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed">
+              Weighted scoring system built directly upon global-standard Lighthouse audit weights.
+            </p>
+          </div>
+
+          <div className="bg-white border border-border-grey rounded-md p-6">
+            <CheckCircle2 className="w-8 h-8 text-signal-blue mb-3" />
+            <h3 className="font-sans text-base font-bold text-ink mb-2">Passed Checks Registry</h3>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed">
+              Explore audits that passed successfully with full element code-snippets.
+            </p>
+          </div>
+
+          <div className="bg-white border border-border-grey rounded-md p-6">
+            <Download className="w-8 h-8 text-signal-blue mb-3" />
+            <h3 className="font-sans text-base font-bold text-ink mb-2">Multi-Format Reports</h3>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed">
+              Download clean audits as print-ready PDF summaries, developer JSON files, or CSVs.
+            </p>
+          </div>
+
+          <div className="bg-white border border-border-grey rounded-md p-6">
+            <HeartHandshake className="w-8 h-8 text-signal-blue mb-3" />
+            <h3 className="font-sans text-base font-bold text-ink mb-2">Interactive Color Contrast</h3>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed">
+              Validate WCAG AAA color combinations in real-time using our dedicated tools.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <hr className="border-t border-border-grey" />
+
+      {/* POUR Principles (Simplified) */}
+      <section className="max-w-6xl mx-auto w-full px-6 py-16 bg-white border-y border-border-grey/60">
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <BookOpen className="w-10 h-10 text-signal-blue mx-auto mb-3" />
+          <h2 className="font-sans text-2xl font-bold text-ink mb-3">
+            Understanding Accessibility (POUR Principles)
+          </h2>
+          <p className="font-sans text-sm text-minor-grey leading-relaxed">
+            The WCAG accessibility standards are organized around four core pillars. Here is what they mean in simple terms, without the jargon.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="flex flex-col gap-1 p-4 rounded-md border border-border-grey/40 hover:border-border-grey transition-all">
+            <h3 className="font-sans text-base font-bold text-ink flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-signal-blue/10 text-signal-blue text-xs font-bold flex items-center justify-center">P</span>
+              Perceivable
+            </h3>
+            <span className="font-sans text-[10px] uppercase font-bold text-minor-grey tracking-wider ml-8">"Can I see and hear the content?"</span>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed mt-2 ml-8">
+              Information cannot be invisible to all senses. This means providing text alternatives (alt text) for images, readable color contrast ratios, and screen-readable structure.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-1 p-4 rounded-md border border-border-grey/40 hover:border-border-grey transition-all">
+            <h3 className="font-sans text-base font-bold text-ink flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-signal-blue/10 text-signal-blue text-xs font-bold flex items-center justify-center">O</span>
+              Operable
+            </h3>
+            <span className="font-sans text-[10px] uppercase font-bold text-minor-grey tracking-wider ml-8">"Can I navigate and interact with it?"</span>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed mt-2 ml-8">
+              Users must be able to use the website's interface. It must be fully keyboard navigable (no mouse required), free of keyboard traps, and provide ample time to complete actions.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-1 p-4 rounded-md border border-border-grey/40 hover:border-border-grey transition-all">
+            <h3 className="font-sans text-base font-bold text-ink flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-signal-blue/10 text-signal-blue text-xs font-bold flex items-center justify-center">U</span>
+              Understandable
+            </h3>
+            <span className="font-sans text-[10px] uppercase font-bold text-minor-grey tracking-wider ml-8">"Can I easily read and comprehend it?"</span>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed mt-2 ml-8">
+              Information and operations must be clear. This means using readable lang properties, logical reading layouts, and forms that provide clear guidance and error corrections.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-1 p-4 rounded-md border border-border-grey/40 hover:border-border-grey transition-all">
+            <h3 className="font-sans text-base font-bold text-ink flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-signal-blue/10 text-signal-blue text-xs font-bold flex items-center justify-center">R</span>
+              Robust
+            </h3>
+            <span className="font-sans text-[10px] uppercase font-bold text-minor-grey tracking-wider ml-8">"Does it work across browsers and devices?"</span>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed mt-2 ml-8">
+              Content must remain compatible with current and future user agents, including assistive tools (like screen readers, Braille displays, and voice controllers).
+            </p>
+          </div>
+        </div>
       </section>
 
       <hr className="border-t border-border-grey" />

@@ -4,6 +4,7 @@ import { ScannedURLBar } from '../../components/results/ScannedURLBar';
 import { ScoreSummary } from '../../components/results/ScoreSummary';
 import { PreviewPanel } from '../../components/results/PreviewPanel';
 import { ViolationPanel } from '../../components/results/ViolationPanel';
+import { PassedAuditsPanel } from '../../components/results/ViolationPanel/PassedAuditsPanel';
 import { ExportBar } from '../../components/results/ExportBar';
 import { ScanProgressOverlay } from '../../components/results/ScanProgressOverlay';
 import { calculateScore } from '../../lib/scoreCalculator';
@@ -29,7 +30,7 @@ export const ResultsPage: React.FC = () => {
 
   if (!results) return null;
 
-  const scoreResult = calculateScore(results.violations);
+  const scoreResult = calculateScore(results.violations, results.passes || []);
 
   const handleRescan = async () => {
     try {
@@ -81,6 +82,7 @@ export const ResultsPage: React.FC = () => {
             selectedLevel={selectedLevel}
             highlightSelectors={highlightSelectors}
           />
+          <PassedAuditsPanel passes={results.passes || []} />
         </div>
       </main>
 

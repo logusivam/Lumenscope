@@ -59,6 +59,32 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ url, htmlContent, hi
 </style>
 `;
 
+    // Script to prevent the iframe from navigating away (which would make it cross-origin
+    // and break highlighting). Intercepts all link clicks and form submissions.
+    const navigationBlocker = `
+<script id="lumenscope-nav-blocker">
+(function() {
+  document.addEventListener('click', function(e) {
+    var target = e.target;
+    while (target && target.tagName !== 'A') {
+      target = target.parentElement;
+    }
+    if (target && target.tagName === 'A') {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+  document.addEventListener('submit', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+  window.addEventListener('beforeunload', function(e) {
+    e.preventDefault();
+  });
+})();
+</script>
+`;
+
     // Extract origin for base URL
     let baseUrl = url;
     try {
@@ -68,18 +94,31 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ url, htmlContent, hi
       // Use url as-is
     }
 
-    if (!/\<base\s+/i.test(htmlContent)) {
-      if (/<head[^>]*>/i.test(htmlContent)) {
-        processedHtml = htmlContent.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${baseUrl}">\n${overrideStyle}`);
+    // Strip <link rel="preload" as="script"> tags to prevent 404s for JS files
+    // (scripts are stripped by stripScripts, but their preload hints remain and cause errors)
+    processedHtml = processedHtml
+      .replace(/<link\b[^>]*\brel\s*=\s*['"](?:preload|modulepreload)['"][^>]*\bas\s*=\s*['"]script['"][^>]*\/?>/gi, '')
+      .replace(/<link\b[^>]*\bas\s*=\s*['"]script['"][^>]*\brel\s*=\s*['"](?:preload|modulepreload)['"][^>]*\/?>/gi, '');
+
+    if (!/<base\s+/i.test(htmlContent)) {
+      if (/<head[^>]*>/i.test(processedHtml)) {
+        processedHtml = processedHtml.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${baseUrl}">\n${overrideStyle}`);
       } else {
-        processedHtml = `<base href="${baseUrl}">\n${overrideStyle}\n` + htmlContent;
+        processedHtml = `<base href="${baseUrl}">\n${overrideStyle}\n` + processedHtml;
       }
     } else {
-      if (/<head[^>]*>/i.test(htmlContent)) {
-        processedHtml = htmlContent.replace(/<head([^>]*)>/i, `<head$1>\n${overrideStyle}`);
+      if (/<head[^>]*>/i.test(processedHtml)) {
+        processedHtml = processedHtml.replace(/<head([^>]*)>/i, `<head$1>\n${overrideStyle}`);
       } else {
-        processedHtml = overrideStyle + htmlContent;
+        processedHtml = overrideStyle + processedHtml;
       }
+    }
+
+    // Inject navigation blocker before </body> (or at end if no </body>)
+    if (/<\/body>/i.test(processedHtml)) {
+      processedHtml = processedHtml.replace(/<\/body>/i, `${navigationBlocker}\n</body>`);
+    } else {
+      processedHtml += navigationBlocker;
     }
   }
 
@@ -102,6 +141,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ url, htmlContent, hi
         <iframe
           ref={iframeRef}
           srcDoc={processedHtml}
+          sandbox="allow-same-origin allow-forms"
           title="Scanned Website Preview"
           className="w-full h-full border-none"
         />

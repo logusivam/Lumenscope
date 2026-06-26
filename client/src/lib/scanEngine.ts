@@ -1,6 +1,41 @@
 import axe from 'axe-core';
 import { AxeResults } from '../types/axe';
 
+function prepareHtmlForAudit(htmlContent: string, baseUrl: string): string {
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, 'text/html');
+
+    // 1. Add/update <base> tag to resolve relative assets correctly
+    let baseElement = doc.querySelector('base');
+    if (!baseElement) {
+      baseElement = doc.createElement('base');
+      doc.head.insertBefore(baseElement, doc.head.firstChild);
+    }
+    baseElement.setAttribute('href', baseUrl);
+
+    // 2. Remove all script tags to prevent them from running
+    const scripts = doc.querySelectorAll('script');
+    scripts.forEach(script => script.remove());
+
+    // 3. Remove inline event handlers (on*) to prevent any code execution
+    const allElements = doc.querySelectorAll('*');
+    allElements.forEach(el => {
+      const attrs = Array.from(el.attributes);
+      attrs.forEach(attr => {
+        if (attr.name.toLowerCase().startsWith('on')) {
+          el.removeAttribute(attr.name);
+        }
+      });
+    });
+
+    return doc.documentElement.outerHTML;
+  } catch (e) {
+    console.error('Error preparing HTML for audit:', e);
+    return htmlContent;
+  }
+}
+
 export async function runScan(url: string, htmlContent: string): Promise<AxeResults> {
   return new Promise((resolve, reject) => {
     const iframe = document.createElement('iframe');
@@ -62,9 +97,10 @@ export async function runScan(url: string, htmlContent: string): Promise<AxeResu
       }
     };
 
-    iframe.srcdoc = htmlContent;
+    iframe.srcdoc = prepareHtmlForAudit(htmlContent, url);
   });
 }
+
 
 export async function scanUrl(url: string, apiBaseUrl: string = 'http://localhost:3001'): Promise<{ results: AxeResults; html: string }> {
   const fetchUrl = `${apiBaseUrl}/api/fetch?url=${encodeURIComponent(url)}`;

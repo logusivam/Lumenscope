@@ -1,4 +1,3 @@
-import axe from 'axe-core';
 import axeSource from 'axe-core/axe.min.js?raw';
 import { AxeResults } from '../types/axe';
 

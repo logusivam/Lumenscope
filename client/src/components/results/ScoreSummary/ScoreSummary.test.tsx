@@ -33,7 +33,10 @@ describe('ScoreSummary', () => {
         scoreResult={mockResult}
         selectedLevel="all"
         onSelectLevel={vi.fn()}
-        totalTestsRun={50}
+        passedCount={30}
+        violatedCount={5}
+        incompleteCount={10}
+        inapplicableCount={5}
       />
     );
     expect(screen.getByText('Accessibility Health')).toBeDefined();
@@ -47,7 +50,10 @@ describe('ScoreSummary', () => {
         scoreResult={mockResult}
         selectedLevel="all"
         onSelectLevel={vi.fn()}
-        totalTestsRun={50}
+        passedCount={30}
+        violatedCount={5}
+        incompleteCount={10}
+        inapplicableCount={5}
       />
     );
     const results = await axe.run(container);

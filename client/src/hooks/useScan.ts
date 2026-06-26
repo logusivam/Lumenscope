@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { ScanState } from '../types/scan';
 import { scanUrl } from '../lib/scanEngine';
+import { BACKEND_URL } from '../config';
 
-export function useScan(apiBaseUrl: string = 'http://localhost:3001') {
+export function useScan(apiBaseUrl: string = BACKEND_URL) {
   const [state, setState] = useState<ScanState>({
     status: 'idle',
     results: null,

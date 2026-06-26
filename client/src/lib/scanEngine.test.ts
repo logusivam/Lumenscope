@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
 import { runScan } from './scanEngine';
-import axe from 'axe-core';
 
 vi.mock('axe-core', () => ({
   default: {

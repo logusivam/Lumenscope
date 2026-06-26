@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router';
 import { URLInputForm } from '../../components/home/URLInputForm';
 import { ScanProgressOverlay } from '../../components/results/ScanProgressOverlay';
 import { useScan } from '../../hooks/useScan';
-import { ArrowRight, Eye, ShieldAlert, Zap, HelpCircle, CheckCircle2, ListChecks, HeartHandshake, BookOpen, Download } from 'lucide-react';
+import { ArrowRight, Eye, ShieldAlert, Zap, HelpCircle, CheckCircle2, ListChecks, HeartHandshake, Download } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const { scan, status, error } = useScan('http://localhost:3001');
+  const { scan, status, error } = useScan();
 
   const handleAuditSubmit = async (url: string) => {
     try {

@@ -14,7 +14,7 @@ import { AxeResults } from '../../types/axe';
 export const ResultsPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { scan, status } = useScan('http://localhost:3001');
+  const { scan, status } = useScan();
 
   // Load results from navigation state
   const [results, setResults] = useState<AxeResults | null>(location.state?.results || null);
@@ -60,10 +60,10 @@ export const ResultsPage: React.FC = () => {
             scoreResult={scoreResult}
             selectedLevel={selectedLevel}
             onSelectLevel={setSelectedLevel}
-            totalTestsRun={
-              (results.passes?.length || 0) +
-              (results.violations?.length || 0)
-            }
+            passedCount={results.passes?.length || 0}
+            violatedCount={results.violations?.length || 0}
+            incompleteCount={results.incomplete?.length || 0}
+            inapplicableCount={results.inapplicable?.length || 0}
           />
           <PreviewPanel
             url={results.url}

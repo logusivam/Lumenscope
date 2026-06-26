@@ -17,7 +17,7 @@ describe('useScan hook', () => {
 
     const { result } = renderHook(() => useScan());
     
-    let scanPromise;
+    let scanPromise: any;
     act(() => {
       scanPromise = result.current.scan('http://test.com');
     });

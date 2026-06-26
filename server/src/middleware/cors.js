@@ -1,10 +1,11 @@
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { FRONTEND_URL } from '../config.js';
 
 dotenv.config();
 
 export const corsMiddleware = () => {
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const frontendUrl = FRONTEND_URL;
   
   return cors({
     origin: (origin, callback) => {

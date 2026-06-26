@@ -8,12 +8,14 @@ interface ScoreSummaryProps {
   scoreResult: ScoreResult;
   selectedLevel: 'A' | 'AA' | 'AAA' | 'all';
   onSelectLevel: (level: 'A' | 'AA' | 'AAA' | 'all') => void;
+  totalTestsRun: number;
 }
 
 export const ScoreSummary: React.FC<ScoreSummaryProps> = ({
   scoreResult,
   selectedLevel,
-  onSelectLevel
+  onSelectLevel,
+  totalTestsRun
 }) => {
   return (
     <div className="bg-white border border-border-grey rounded-md p-6 flex flex-col gap-6">
@@ -30,6 +32,12 @@ export const ScoreSummary: React.FC<ScoreSummaryProps> = ({
       <div>
         <h2 className="font-sans text-sm font-bold text-ink uppercase tracking-wider mb-3">WCAG level filter</h2>
         <WCAGLevelTabs counts={scoreResult.wcag} selectedLevel={selectedLevel} onSelectLevel={onSelectLevel} />
+      </div>
+      <div className="border-t border-border-grey/60 pt-4 flex justify-between items-center text-xs">
+        <span className="font-sans font-semibold text-minor-grey">Total Audits Evaluated</span>
+        <span className="font-mono font-bold text-ink bg-paper px-2.5 py-1 rounded border border-border-grey/30">
+          {totalTestsRun} rules
+        </span>
       </div>
     </div>
   );

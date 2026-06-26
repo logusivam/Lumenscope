@@ -1,4 +1,5 @@
 import React from 'react';
+import { Eye, Keyboard, HelpCircle, Laptop } from 'lucide-react';
 
 export const AboutPage: React.FC = () => {
   return (
@@ -57,51 +58,65 @@ export const AboutPage: React.FC = () => {
           </div>
         </div>
 
-        <h3 className="font-sans text-lg font-semibold text-ink mb-4">The POUR Principles</h3>
-        <div className="flex flex-col gap-4">
-          <div>
-            <h4 className="font-sans text-sm font-semibold text-signal-blue">1. Perceivable</h4>
-            <p className="font-sans text-xs text-minor-grey mt-0.5">
-              Information and user interface components must be presentable to users in ways they can perceive (e.g. text alternatives for media, readable contrast).
-            </p>
+      <h3 className="font-sans text-lg font-bold text-ink mb-6">The POUR Principles of Accessibility</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Perceivable */}
+        <div className="bg-white border border-border-grey rounded-md p-5 flex gap-4 transition-all hover:shadow-sm">
+          <div className="w-10 h-10 bg-signal-blue/10 text-signal-blue rounded-full flex items-center justify-center shrink-0">
+            <Eye className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="font-sans text-sm font-semibold text-signal-blue">2. Operable</h4>
-            <p className="font-sans text-xs text-minor-grey mt-0.5">
-              User interface components and navigation must be operable (e.g. keyboard accessible, clear focus indicators, sufficient time to interact).
-            </p>
-          </div>
-          <div>
-            <h4 className="font-sans text-sm font-semibold text-signal-blue">3. Understandable</h4>
-            <p className="font-sans text-xs text-minor-grey mt-0.5">
-              Information and the operation of the user interface must be understandable (e.g. predictable navigation patterns, explicit input validation errors).
-            </p>
-          </div>
-          <div>
-            <h4 className="font-sans text-sm font-semibold text-signal-blue">4. Robust</h4>
-            <p className="font-sans text-xs text-minor-grey mt-0.5">
-              Content must be robust enough to be interpreted reliably by a wide variety of user agents, including assistive technologies like screen readers.
+            <h4 className="font-sans text-sm font-bold text-ink mb-1">Perceivable</h4>
+            <span className="font-mono text-[9px] uppercase font-bold text-minor-grey tracking-wider">"Can users see/hear the content?"</span>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed mt-2">
+              Information cannot be invisible to all senses. This means providing text alternatives (alt text) for images, captions for video, and clear color contrast ratios.
             </p>
           </div>
         </div>
-      </section>
 
-      <hr className="border-border-grey mb-10" />
-
-      {/* Tech Stack */}
-      <section className="mb-8">
-        <h2 className="font-sans text-2xl font-bold text-ink mb-4">Diagnostic Tech Stack</h2>
-        <div className="flex flex-wrap gap-2">
-          {['React 18', 'TypeScript', 'Vite 8', 'Tailwind CSS v4', 'axe-core 4.11', 'Motion 12', 'Recharts 3', 'html2pdf.js', 'Express 4'].map((tech) => (
-            <span
-              key={tech}
-              className="px-3 py-1 bg-white border border-border-grey rounded-full font-mono text-xs text-ink"
-            >
-              {tech}
-            </span>
-          ))}
+        {/* Operable */}
+        <div className="bg-white border border-border-grey rounded-md p-5 flex gap-4 transition-all hover:shadow-sm">
+          <div className="w-10 h-10 bg-signal-blue/10 text-signal-blue rounded-full flex items-center justify-center shrink-0">
+            <Keyboard className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="font-sans text-sm font-bold text-ink mb-1">Operable</h4>
+            <span className="font-mono text-[9px] uppercase font-bold text-minor-grey tracking-wider">"Can they navigate and interact?"</span>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed mt-2">
+              Users must be able to use the website's interface. The site must be fully keyboard navigable (no mouse required), free of keyboard traps, and provide clear focus styling.
+            </p>
+          </div>
         </div>
-      </section>
+
+        {/* Understandable */}
+        <div className="bg-white border border-border-grey rounded-md p-5 flex gap-4 transition-all hover:shadow-sm">
+          <div className="w-10 h-10 bg-signal-blue/10 text-signal-blue rounded-full flex items-center justify-center shrink-0">
+            <HelpCircle className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="font-sans text-sm font-bold text-ink mb-1">Understandable</h4>
+            <span className="font-mono text-[9px] uppercase font-bold text-minor-grey tracking-wider">"Can they comprehend the interface?"</span>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed mt-2">
+              Information and operations must be clear. This means using readable language properties, consistent navigation, and forms that provide helpful instructions and error corrections.
+            </p>
+          </div>
+        </div>
+
+        {/* Robust */}
+        <div className="bg-white border border-border-grey rounded-md p-5 flex gap-4 transition-all hover:shadow-sm">
+          <div className="w-10 h-10 bg-signal-blue/10 text-signal-blue rounded-full flex items-center justify-center shrink-0">
+            <Laptop className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="font-sans text-sm font-bold text-ink mb-1">Robust</h4>
+            <span className="font-mono text-[9px] uppercase font-bold text-minor-grey tracking-wider">"Does it work across standard devices?"</span>
+            <p className="font-sans text-xs text-minor-grey leading-relaxed mt-2">
+              Content must remain compatible with current and future browsers, assistive tools, and screen readers by using valid standard-compliant HTML tags.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
     </div>
   );
 };

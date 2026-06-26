@@ -60,6 +60,10 @@ export const ResultsPage: React.FC = () => {
             scoreResult={scoreResult}
             selectedLevel={selectedLevel}
             onSelectLevel={setSelectedLevel}
+            totalTestsRun={
+              (results.passes?.length || 0) +
+              (results.violations?.length || 0)
+            }
           />
           <PreviewPanel
             url={results.url}

@@ -1,4 +1,5 @@
 import axe from 'axe-core';
+import axeSource from 'axe-core/axe.min.js?raw';
 import { AxeResults } from '../types/axe';
 
 function prepareHtmlForAudit(htmlContent: string, baseUrl: string): string {
@@ -58,9 +59,19 @@ export async function runScan(url: string, htmlContent: string): Promise<AxeResu
           throw new Error('Failed to access iframe document context');
         }
 
-        // Run axe-core directly from the parent context on the iframe's document.
-        // This avoids injecting and executing script sources inside the iframe.
-        const results = await axe.run(iframeDoc as any, {
+        // Inject raw axe-core source into the iframe and run it there.
+        // Running axe within the iframe avoids cross-origin/cross-frame type check errors.
+        const axeScript = iframeDoc.createElement('script');
+        axeScript.textContent = axeSource;
+        iframeDoc.head.appendChild(axeScript);
+
+        // Access the injected axe instance inside the iframe
+        const iframeAxe = (iframe.contentWindow as any).axe;
+        if (!iframeAxe) {
+          throw new Error('Failed to inject axe-core into iframe context');
+        }
+
+        const results = await iframeAxe.run(iframeDoc, {
           runOnly: {
             type: 'tag',
             values: ['wcag2a', 'wcag2aa', 'wcag2aaa']

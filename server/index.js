@@ -10,6 +10,7 @@ import { BACKEND_URL } from './src/config.js';
 dotenv.config();
 
 const app = express();
+app.set('trust proxy', 1);
 const port = process.env.PORT || new URL(BACKEND_URL).port || 3001;
 
 // Global Middleware

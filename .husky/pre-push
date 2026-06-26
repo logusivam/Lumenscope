@@ -1,0 +1,2 @@
+npm run test:client -- --run
+npm run test:server

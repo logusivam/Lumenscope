@@ -83,14 +83,14 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
           }
           .pdf-footer {
             position: absolute;
-            bottom: 16mm;
+            bottom: 20mm;
             left: 18mm;
             right: 18mm;
             border-top: 1px solid #D9D9D6;
             padding-top: 10px;
             font-size: 9px;
             color: #6B7280;
-            overflow: hidden;
+            line-height: 1.4;
             background-color: #FFFFFF;
           }
           .pdf-footer-left {

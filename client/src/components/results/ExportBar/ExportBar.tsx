@@ -223,18 +223,20 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
             background: #FFFFFF;
             page-break-inside: avoid;
           }
-          .v-badge {
+           .v-badge {
             font-size: 9px;
             font-weight: 700;
             text-transform: uppercase;
-            padding: 4px 10px;
+            height: 24px;
+            line-height: 12px;
+            padding: 0 10px;
             border-radius: 4px;
             letter-spacing: 0.5px;
             border-width: 1px;
             border-style: solid;
             display: inline-block;
             text-align: center;
-            line-height: 1;
+            box-sizing: border-box;
           }
           .v-badge.critical { background: #FDF2F2; color: #B23030; border-color: #FCA5A5; }
           .v-badge.serious { background: #FEF8F2; color: #9A5A1A; border-color: #FCD34D; }

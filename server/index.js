@@ -4,6 +4,7 @@ import { corsMiddleware } from './src/middleware/cors.js';
 import { rateLimitMiddleware } from './src/middleware/rateLimit.js';
 import { errorHandlerMiddleware } from './src/middleware/errorHandler.js';
 import fetchRouter from './src/routes/fetch.js';
+import contactRouter from './src/routes/contact.js';
 import healthRouter from './src/routes/health.js';
 import { BACKEND_URL } from './src/config.js';
 
@@ -20,6 +21,7 @@ app.use(express.json());
 // Routes
 app.use('/health', healthRouter);
 app.use('/api/fetch', rateLimitMiddleware, fetchRouter);
+app.use('/api/contact', rateLimitMiddleware, contactRouter);
 
 // Error handling
 app.use(errorHandlerMiddleware);

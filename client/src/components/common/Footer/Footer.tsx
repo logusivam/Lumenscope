@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Mail, Send, CheckCircle2 } from 'lucide-react';
+import { Mail, Send, CheckCircle2, Loader2 } from 'lucide-react';
+import { BACKEND_URL } from '../../../config';
 
 export const Footer: React.FC = () => {
   const [activeModal, setActiveModal] = useState<'terms' | 'privacy' | 'contact' | null>(null);
@@ -7,22 +8,68 @@ export const Footer: React.FC = () => {
   const [contactEmail, setContactEmail] = useState('');
   const [contactMessage, setContactMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const currentYear = new Date().getFullYear();
   const yearText = currentYear > 2026 ? `2026 - ${currentYear}` : '2026';
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!contactName || !contactEmail || !contactMessage) return;
-    setIsSubmitted(true);
-    setTimeout(() => {
-      // Reset form
+    setSubmitError(null);
+
+    // Strict validation
+    if (!contactName.trim() || !contactEmail.trim() || !contactMessage.trim()) {
+      setSubmitError('All fields are required.');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(contactEmail)) {
+      setSubmitError('Please enter a valid email address.');
+      return;
+    }
+
+    if (contactMessage.length > 500) {
+      setSubmitError('Message cannot exceed 500 characters.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: contactName.trim(),
+          email: contactEmail.trim(),
+          message: contactMessage.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message.');
+      }
+
+      setIsSubmitted(true);
       setContactName('');
       setContactEmail('');
       setContactMessage('');
-      setIsSubmitted(false);
-      setActiveModal(null);
-    }, 2500);
+
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setActiveModal(null);
+      }, 3000);
+    } catch (err: any) {
+      setSubmitError(err.message || 'Failed to send message. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -136,6 +183,12 @@ export const Footer: React.FC = () => {
                   </div>
                 ) : (
                   <form onSubmit={handleContactSubmit} className="space-y-4">
+                    {submitError && (
+                      <div className="p-2.5 bg-severity-critical/10 border border-severity-critical/20 text-severity-critical-text rounded text-[11px] font-sans">
+                        {submitError}
+                      </div>
+                    )}
+
                     <div>
                       <label htmlFor="contact-name" className="block font-sans text-xs font-semibold text-ink mb-1">
                         Name
@@ -144,9 +197,10 @@ export const Footer: React.FC = () => {
                         id="contact-name"
                         type="text"
                         required
+                        disabled={isSubmitting}
                         value={contactName}
                         onChange={(e) => setContactName(e.target.value)}
-                        className="w-full px-3 py-2 border border-border-grey rounded font-sans text-xs focus:ring-1 focus:ring-signal-blue focus:border-signal-blue outline-none text-ink bg-white"
+                        className="w-full px-3 py-2 border border-border-grey rounded font-sans text-xs focus:ring-1 focus:ring-signal-blue focus:border-signal-blue outline-none text-ink bg-white disabled:opacity-50"
                         placeholder="Your Name"
                       />
                     </div>
@@ -159,34 +213,52 @@ export const Footer: React.FC = () => {
                         id="contact-email"
                         type="email"
                         required
+                        disabled={isSubmitting}
                         value={contactEmail}
                         onChange={(e) => setContactEmail(e.target.value)}
-                        className="w-full px-3 py-2 border border-border-grey rounded font-sans text-xs focus:ring-1 focus:ring-signal-blue focus:border-signal-blue outline-none text-ink bg-white"
+                        className="w-full px-3 py-2 border border-border-grey rounded font-sans text-xs focus:ring-1 focus:ring-signal-blue focus:border-signal-blue outline-none text-ink bg-white disabled:opacity-50"
                         placeholder="you@example.com"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="contact-message" className="block font-sans text-xs font-semibold text-ink mb-1">
-                        Message
-                      </label>
+                      <div className="flex justify-between items-center mb-1">
+                        <label htmlFor="contact-message" className="block font-sans text-xs font-semibold text-ink">
+                          Message
+                        </label>
+                        <span className="font-sans text-[10px] text-minor-grey">
+                          {500 - contactMessage.length} / 500
+                        </span>
+                      </div>
                       <textarea
                         id="contact-message"
                         required
                         rows={4}
+                        maxLength={500}
+                        disabled={isSubmitting}
                         value={contactMessage}
                         onChange={(e) => setContactMessage(e.target.value)}
-                        className="w-full px-3 py-2 border border-border-grey rounded font-sans text-xs focus:ring-1 focus:ring-signal-blue focus:border-signal-blue outline-none text-ink bg-white resize-none"
+                        className="w-full px-3 py-2 border border-border-grey rounded font-sans text-xs focus:ring-1 focus:ring-signal-blue focus:border-signal-blue outline-none text-ink bg-white resize-none disabled:opacity-50"
                         placeholder="How can we help you?"
                       />
                     </div>
 
                     <button
                       type="submit"
-                      className="w-full py-2 bg-signal-blue text-white rounded font-sans text-xs font-semibold hover:bg-opacity-95 flex items-center justify-center gap-1.5 transition-all shadow-sm"
+                      disabled={isSubmitting}
+                      className="w-full py-2 bg-signal-blue text-white rounded font-sans text-xs font-semibold hover:bg-opacity-95 disabled:bg-opacity-50 flex items-center justify-center gap-1.5 transition-all shadow-sm disabled:cursor-not-allowed"
                     >
-                      <Send className="w-3.5 h-3.5" />
-                      Send Message
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-3.5 h-3.5" />
+                          Send Message
+                        </>
+                      )}
                     </button>
                   </form>
                 )}

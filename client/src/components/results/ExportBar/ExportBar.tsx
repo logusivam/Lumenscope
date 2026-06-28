@@ -228,7 +228,7 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
             font-weight: 700;
             text-transform: uppercase;
             height: 24px;
-            line-height: 12px;
+            line-height: 10px;
             padding: 0 10px;
             border-radius: 4px;
             letter-spacing: 0.5px;

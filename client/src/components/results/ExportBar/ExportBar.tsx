@@ -35,6 +35,22 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
         minor: results.violations.filter(v => v.impact === 'minor' || !v.impact)
       };
 
+      // Split violations into chunks of 3 violations per page to prevent A4 overflow
+      const violationsChunks = [];
+      const violationsChunkSize = 3;
+      for (let i = 0; i < results.violations.length; i += violationsChunkSize) {
+        violationsChunks.push(results.violations.slice(i, i + violationsChunkSize));
+      }
+
+      // Split passes into chunks of 12 passes per page to prevent A4 overflow
+      const passesChunks = [];
+      const passesChunkSize = 12;
+      for (let i = 0; i < results.passes.length; i += passesChunkSize) {
+        passesChunks.push(results.passes.slice(i, i + passesChunkSize));
+      }
+
+      let currentPage = 1;
+
       // Create a programmatic custom HTML layout for PDF printing
       const pdfContainer = document.createElement('div');
       pdfContainer.className = 'pdf-report';
@@ -223,7 +239,7 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
             background: #FFFFFF;
             page-break-inside: avoid;
           }
-           .v-badge {
+          .v-badge {
             font-size: 9px;
             font-weight: 700;
             text-transform: uppercase;
@@ -304,7 +320,7 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
           }
         </style>
 
-        <!-- PAGE 1: COVER PAGE -->
+        <!-- PAGE 1: COVER PAGE (No Footer per industry standards) -->
         <div class="pdf-page">
           <div class="cover-container">
             <img src="${logoFullPng}" class="cover-logo" alt="Lumenscope Logo" />
@@ -350,27 +366,16 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
               employing screen readers, keyboard-only traversals, and user-testing remains essential for complete WCAG certification.</p>
             </div>
           </div>
-          <div class="pdf-footer">
-            <span class="pdf-footer-left">logusivam vision</span>
-            <span class="pdf-footer-right">Page 1</span>
-          </div>
         </div>
 
-        <!-- PAGE 2: EXECUTIVE SUMMARY -->
+        <!-- PAGE 2: EXECUTIVE SUMMARY (Page 1 in numbering) -->
         <div class="pdf-page">
           <div class="pdf-header">
             <img src="${logoFullPng}" alt="Lumenscope Logo" />
             <span class="pdf-header-title">Executive Summary</span>
           </div>
           
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; margin-top: 15px;">
-            <tr>
-              <td style="width: 4px; background-color: #2D5BFF; padding: 0; line-height: 1;">&nbsp;</td>
-              <td style="padding-left: 10px; font-size: 14px; font-weight: 700; color: #1A1D23; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; font-family: 'IBM Plex Sans', sans-serif;">
-                Compliance Statistics
-              </td>
-            </tr>
-          </table>
+          <div style="font-size: 14px; font-weight: 700; color: #1A1D23; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; font-family: 'IBM Plex Sans', sans-serif; margin-bottom: 18px; margin-top: 15px;"><span style="color: #2D5BFF; margin-right: 8px;">01.</span>Compliance Statistics</div>
           
           <div class="stats-grid">
             <div class="stat-card passed">
@@ -391,14 +396,7 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
             </div>
           </div>
 
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; margin-top: 15px;">
-            <tr>
-              <td style="width: 4px; background-color: #2D5BFF; padding: 0; line-height: 1;">&nbsp;</td>
-              <td style="padding-left: 10px; font-size: 14px; font-weight: 700; color: #1A1D23; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; font-family: 'IBM Plex Sans', sans-serif;">
-                Violation Level Breakdown
-              </td>
-            </tr>
-          </table>
+          <div style="font-size: 14px; font-weight: 700; color: #1A1D23; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; font-family: 'IBM Plex Sans', sans-serif; margin-bottom: 18px; margin-top: 15px;"><span style="color: #2D5BFF; margin-right: 8px;">02.</span>Violation Level Breakdown</div>
           
           <table class="v-table">
             <thead>
@@ -434,88 +432,82 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
 
           <div class="pdf-footer">
             <span class="pdf-footer-left">logusivam vision</span>
-            <span class="pdf-footer-right">Page 2</span>
+            <span class="pdf-footer-right">Page ${currentPage}</span>
           </div>
         </div>
 
-        <!-- PAGE 3: DETAILED VIOLATIONS -->
-        ${results.violations.length > 0 ? `
-        <div class="pdf-page">
-          <div class="pdf-header">
-            <img src="${logoFullPng}" alt="Lumenscope Logo" />
-            <span class="pdf-header-title">Detailed Violations</span>
-          </div>
-          
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; margin-top: 15px;">
-            <tr>
-              <td style="width: 4px; background-color: #2D5BFF; padding: 0; line-height: 1;">&nbsp;</td>
-              <td style="padding-left: 10px; font-size: 14px; font-weight: 700; color: #1A1D23; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; font-family: 'IBM Plex Sans', sans-serif;">
-                Detailed Rule Violations
-              </td>
-            </tr>
-          </table>
-          
-          <div style="margin-bottom: 20px;">
-            ${results.violations.map((v) => `
-              <div class="v-card">
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">
-                  <tr>
-                    <td style="font-weight: 700; font-size: 12px; color: #1A1D23; text-align: left; vertical-align: middle; font-family: 'IBM Plex Sans', sans-serif; line-height: 1.3;">
-                      ${v.id}
-                    </td>
-                    <td style="text-align: right; vertical-align: middle; width: 100px; padding: 0;">
-                      <span class="v-badge ${v.impact || 'minor'}">${v.impact || 'minor'}</span>
-                    </td>
-                  </tr>
-                </table>
-                <div class="v-desc">${v.description}</div>
-                <div><a href="${v.helpUrl}" target="_blank" class="v-help">Help Reference: ${v.help}</a></div>
-                <div class="node-lbl">Impacted Elements (${v.nodes.length})</div>
-                ${v.nodes.slice(0, 2).map((n) => `
-                  <div class="node-code">${n.html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+        <!-- DETAILED VIOLATIONS (Paginated dynamically) -->
+        ${violationsChunks.map((chunk) => {
+        currentPage++;
+        return `
+            <div class="pdf-page">
+              <div class="pdf-header">
+                <img src="${logoFullPng}" alt="Lumenscope Logo" />
+                <span class="pdf-header-title">Detailed Violations</span>
+              </div>
+              
+              <div style="font-size: 14px; font-weight: 700; color: #1A1D23; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; font-family: 'IBM Plex Sans', sans-serif; margin-bottom: 18px; margin-top: 15px;"><span style="color: #2D5BFF; margin-right: 8px;">03.</span>Detailed Rule Violations</div>
+              
+              <div style="margin-bottom: 20px;">
+                ${chunk.map((v) => `
+                  <div class="v-card">
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px;">
+                      <tr>
+                        <td style="font-weight: 700; font-size: 12px; color: #1A1D23; text-align: left; vertical-align: middle; font-family: 'IBM Plex Sans', sans-serif; line-height: 1.3;">
+                          ${v.id}
+                        </td>
+                        <td style="text-align: right; vertical-align: middle; width: 100px; padding: 0;">
+                          <span class="v-badge ${v.impact || 'minor'}">${v.impact || 'minor'}</span>
+                        </td>
+                      </tr>
+                    </table>
+                    <div class="v-desc">${v.description}</div>
+                    <div><a href="${v.helpUrl}" target="_blank" class="v-help">Help Reference: ${v.help}</a></div>
+                    <div class="node-lbl">Impacted Elements (${v.nodes.length})</div>
+                    ${v.nodes.slice(0, 2).map((n) => `
+                      <div class="node-code">${n.html.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+                    `).join('')}
+                    ${v.nodes.length > 2 ? `<div style="font-size: 8.5px; color: #6B7280; font-style: italic; margin-top: 8px;">+ ${v.nodes.length - 2} more elements found</div>` : ''}
+                  </div>
                 `).join('')}
-                ${v.nodes.length > 2 ? `<div style="font-size: 8.5px; color: #6B7280; font-style: italic; margin-top: 8px;">+ ${v.nodes.length - 2} more elements found</div>` : ''}
               </div>
-            `).join('')}
-          </div>
-          
-          <div class="pdf-footer">
-            <span class="pdf-footer-left">logusivam vision</span>
-            <span class="pdf-footer-right">Page 3</span>
-          </div>
-        </div>
-        ` : ''}
-
-        <!-- PAGE 4: PASSED AUDITS -->
-        <div class="pdf-page">
-          <div class="pdf-header">
-            <img src="${logoFullPng}" alt="Lumenscope Logo" />
-            <span class="pdf-header-title">Passed Audits</span>
-          </div>
-          
-          <table style="width: 100%; border-collapse: collapse; margin-bottom: 18px; margin-top: 15px;">
-            <tr>
-              <td style="width: 4px; background-color: #2D5BFF; padding: 0; line-height: 1;">&nbsp;</td>
-              <td style="padding-left: 10px; font-size: 14px; font-weight: 700; color: #1A1D23; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; font-family: 'IBM Plex Sans', sans-serif;">
-                Passed Audits list
-              </td>
-            </tr>
-          </table>
-          
-          <div class="passed-grid">
-            ${results.passes.map((p) => `
-              <div class="passed-item">
-                <div class="passed-id">${p.id}</div>
-                <div style="color: #4B5563;">${p.description}</div>
+              
+              <div class="pdf-footer">
+                <span class="pdf-footer-left">logusivam vision</span>
+                <span class="pdf-footer-right">Page ${currentPage}</span>
               </div>
-            `).join('')}
-          </div>
+            </div>
+          `;
+      }).join('')}
 
-          <div class="pdf-footer">
-            <span class="pdf-footer-left">logusivam vision</span>
-            <span class="pdf-footer-right">Final Page</span>
-          </div>
-        </div>
+        <!-- PASSED AUDITS (Paginated dynamically) -->
+        ${passesChunks.map((chunk, idx) => {
+        currentPage++;
+        return `
+            <div class="pdf-page">
+              <div class="pdf-header">
+                <img src="${logoFullPng}" alt="Lumenscope Logo" />
+                <span class="pdf-header-title">Passed Audits</span>
+              </div>
+              
+              <div style="font-size: 14px; font-weight: 700; color: #1A1D23; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.2; font-family: 'IBM Plex Sans', sans-serif; margin-bottom: 18px; margin-top: 15px;"><span style="color: #2D5BFF; margin-right: 8px;">04.</span>Passed Audits list ${passesChunks.length > 1 ? `(Part ${idx + 1})` : ''}</div>
+              
+              <div class="passed-grid">
+                ${chunk.map((p) => `
+                  <div class="passed-item">
+                    <div class="passed-id">${p.id}</div>
+                    <div style="color: #4B5563;">${p.description}</div>
+                  </div>
+                `).join('')}
+              </div>
+
+              <div class="pdf-footer">
+                <span class="pdf-footer-left">logusivam vision</span>
+                <span class="pdf-footer-right">Page ${currentPage}</span>
+              </div>
+            </div>
+          `;
+      }).join('')}
       `;
 
       // Mount temporary offscreen element
@@ -552,9 +544,9 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
   const handleExportJSON = () => {
     const dataStr = JSON.stringify(results, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-    
+
     const exportFileDefaultName = `lumenscope-raw-${new Date().toISOString().split('T')[0]}.json`;
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -575,7 +567,7 @@ Violations Count: ${violated}
 Passed Audits Count: ${passed}
 Total Rules Evaluated: ${totalRules} (Passed: ${passed}, Incomplete: ${incomplete}, Violated: ${violated}, N/A: ${inapplicable})
 Generated: ${new Date(results.timestamp).toLocaleString()}`;
-    
+
     navigator.clipboard.writeText(summaryText).then(() => {
       alert('Report summary copied to clipboard!');
     });

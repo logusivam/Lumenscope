@@ -20,7 +20,6 @@ export const ExportBar: React.FC<ExportBarProps> = ({ results, score }) => {
       const violated = results.violations?.length || 0;
       const incomplete = results.incomplete?.length || 0;
       const inapplicable = results.inapplicable?.length || 0;
-      const totalRules = passed + violated + incomplete + inapplicable;
       const dateStr = new Date(results.timestamp).toLocaleDateString(undefined, {
         year: 'numeric',
         month: 'long',

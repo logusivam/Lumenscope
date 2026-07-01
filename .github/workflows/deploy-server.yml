@@ -3,6 +3,8 @@ name: Deploy Server to Render
 on:
   push:
     branches: [ main, master ]
+    paths:
+      - 'server/**'
   workflow_dispatch:
 
 jobs:

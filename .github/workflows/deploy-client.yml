@@ -3,6 +3,8 @@ name: Deploy Client to Vercel
 on:
   push:
     branches: [ main, master ]
+    paths:
+      - 'client/**'
   workflow_dispatch:
 
 jobs:

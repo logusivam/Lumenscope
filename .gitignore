@@ -56,3 +56,6 @@ desktop.ini
 # Agent Customizations
 .agents/
 
+# Project files to ignore
+package-lock.json
+Lumenscope.md

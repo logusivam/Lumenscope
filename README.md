@@ -1,10 +1,16 @@
-# <img src="./client/src/assets/lumenscope-logo-full-dark.svg" alt="Lumenscope Logo" width="300" />
+<div align="center">
+  <img src="./client/src/assets/lumenscope-logo-full-dark@3x.png" alt="Lumenscope Logo" />
+</div>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Node Version](https://img.shields.io/badge/node-%3E%3D20.19-green.svg)](package.json)
-[![Vite v8](https://img.shields.io/badge/vite-v8.0.9-blue.svg)](package.json)
-[![Tailwind v4](https://img.shields.io/badge/tailwind-v4.2.2-teal.svg)](package.json)
-[![Axe Core](https://img.shields.io/badge/axe--core-v4.11.4-orange.svg)](package.json)
+<br/>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/node-%3E%3D20.19-green.svg" alt="Node Version" /></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/vite-v8.0.9-blue.svg" alt="Vite v8" /></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/tailwind-v4.2.2-teal.svg" alt="Tailwind v4" /></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/axe--core-v4.11.4-orange.svg" alt="Axe Core" /></a>
+</p>
 
 **Lumenscope** is a premium, developer-first, web-based accessibility audit instrument. Paste any public website URL, scan its DOM tree under a secure proxy environment, and generate a scored, detailed WCAG compliance assessment report with interactive visual overlays.
 
@@ -59,53 +65,44 @@ The Lumenscope logo represents a precise diagnostic instrument:
 ## 📂 Project Folder Structure
 
 ```
-lumenscope/
-├── .github/                ← GitHub Action Workflows (CI, Deployment)
+Lumenscope/
+├── .github/                ← GitHub Action Workflows
 │   └── workflows/
 │       ├── ci.yml
 │       ├── deploy-client.yml
 │       └── deploy-server.yml
-├── documents/              ← Design, Architecture & Specifications
-│   ├── 01-problem-and-architecture.md
-│   ├── 02-architecture-diagrams-eraser.md
-│   ├── 03-dependencies-and-tech-stack.md
-│   ├── 04-workflow-diagram-eraser.md
-│   ├── 05-user-stories-features-pages.md
-│   ├── 06-visual-design-and-logo.md
-│   ├── 07-test-strategy-and-deployment.md
-│   ├── 08-development-steps-scrum.md
-│   ├── 09-visual-design-and-logo-usage.md
-│   └── 10-recraft-logo-prompt.md
-├── Lumenscope-logo/        ← Logo Assets and Favicons
-├── Lumenscope/             ← Code Workspace Root
-│   ├── client/             ← React Frontend SPA
-│   │   ├── public/         ← Static assets (Sitemap, Robots.txt, Favicons)
-│   │   │   ├── robots.txt
-│   │   │   └── sitemap.xml
-│   │   ├── src/
-│   │   │   ├── components/ ← UI Components (common, home, contrast, results)
-│   │   │   ├── hooks/      ← Custom hooks (useScan, useHighlight, useExport)
-│   │   │   ├── lib/        ← Scan engine & utility functions
-│   │   │   ├── pages/      ← Page components (HomePage, ResultsPage, etc.)
-│   │   │   ├── styles/     ← Tailwind CSS styling files
-│   │   │   ├── types/      ← TypeScript interfaces
-│   │   │   └── main.tsx
-│   │   ├── vite.config.ts
-│   │   └── package.json
-│   ├── server/             ← Express proxy backend
-│   │   ├── src/
-│   │   │   ├── middleware/ ← Rate limit & secure headers
-│   │   │   ├── routes/     ← Express endpoints (fetch route, mail route)
-│   │   │   ├── utils/      ← Helper scripts (sanitizeHtml, oauth mailer)
-│   │   │   └── config.js
-│   │   ├── index.js
-│   │   └── package.json
-│   ├── .editorconfig       ← Code layout configurations
-│   ├── .gitattributes      ← Git line-ending configurations
-│   ├── .gitignore          ← Ignored files listing
-│   ├── LICENSE             ← Project License (MIT)
-│   ├── package.json        ← Workspace configuration file
-│   └── README.md           ← User introduction and setup guide
+├── client/                 ← React Frontend SPA
+│   ├── public/             ← Static assets (Sitemap, Robots.txt, Favicons)
+│   │   ├── robots.txt
+│   │   └── sitemap.xml
+│   ├── src/
+│   │   ├── assets/         ← Icons, Logos & Branding SVG/PNGs
+│   │   ├── components/     ← Common UI, Home, Contrast, and Results components
+│   │   ├── hooks/          ← Custom hooks (useScan, useHighlight, useExport)
+│   │   ├── lib/            ← Scan engine & utility functions
+│   │   ├── pages/          ← Pages (HomePage, ResultsPage, ContrastCheckerPage, AboutPage)
+│   │   ├── styles/         ← Tailwind CSS source styles
+│   │   ├── types/          ← TypeScript interface definitions
+│   │   └── main.tsx
+│   ├── vite.config.ts
+│   └── package.json
+├── server/                 ← Express proxy backend
+│   ├── src/
+│   │   ├── middleware/     ← Security & rate limiting middleware
+│   │   ├── routes/         ← Express routes (fetch router, contact mailer)
+│   │   ├── utils/          ← Helper scripts (sanitizeHtml, oauth mailer)
+│   │   └── config.js
+│   ├── index.js
+│   └── package.json
+├── shared/                 ← Shared packages / typings
+├── .editorconfig           ← Unified editor guidelines
+├── .gitattributes          ← Line-ending normalization configurations
+├── .gitignore              ← Untracked file rules
+├── CHANGELOG.md            ← Version history log
+├── CONTRIBUTING.md         ← Contribution guidelines
+├── LICENSE                 ← MIT License
+├── package.json            ← Workspace configuration metadata
+└── README.md               ← Setup, installation, and architectural overview
 ```
 
 ---
@@ -226,3 +223,10 @@ Run the backend proxy tests:
 ```bash
 npm run test:server
 ```
+
+---
+
+## 👥 Brand & Developer Attribution
+
+* **Lead Developer**: [Loganathan G P](https://loganathan-portfolio.onrender.com)
+* **Brand / Company**: **Logusivam Vision**

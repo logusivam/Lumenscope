@@ -1,4 +1,4 @@
-# <img src="./client/src/assets/lumenscope-logo-full-dark.svg" alt="Lumenscope Logo" width="300" />
+# <img src="./client/src/assets/lumenscope-logo-full-dark@3x.png" alt="Lumenscope Logo" width="300" />
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node Version](https://img.shields.io/badge/node-%3E%3D20.19-green.svg)](package.json)

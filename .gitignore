@@ -56,3 +56,5 @@ desktop.ini
 # Agent Customizations
 .agents/
 
+# Project files to ignore
+Lumenscope.md

@@ -1,0 +1,22 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Custom override to preserve line endings for Windows files
+*.bat      text eol=crlf
+*.cmd      text eol=crlf
+*.ps1      text eol=crlf
+
+# Common web files
+*.html     text diff=html
+*.css      text
+*.js       text
+*.jsx      text
+*.ts       text
+*.tsx      text
+*.json     text
+
+# Documentation and configs
+*.md       text
+.gitignore text
+.gitattributes text
+.editorconfig text

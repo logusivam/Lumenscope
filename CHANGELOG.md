@@ -5,8 +5,18 @@ All notable changes to the Lumenscope project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2026-06-27
+## [Unreleased]
 
+## [1.1.0] - 2026-07-03
+### Added
+- Added project standard configuration boilerplate: `.editorconfig`, `.gitattributes`, and MIT `LICENSE`.
+- GitHub workflows deploy-client.yml and deploy-server.yml paths-scoping to avoid redundant trigger builds.
+
+### Changed
+- Refactored PDF exporter section titles, replacing the vertical indicator bars with styled sequential numeric labels (01., 02., etc.) aligned to the baseline.
+- Fixed PDF layout splitting on A4 dimensions, resolving clipped footer details on the last page.
+
+## [1.0.0] - 2026-06-27
 ### Added
 - Gmail API Integration (OAuth2) via `googleapis` for secure contact form mail delivery.
 - Strict input validation in the frontend contact form.

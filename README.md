@@ -2,11 +2,15 @@
   <img src="./client/src/assets/lumenscope-logo-full-dark@3x.png" alt="Lumenscope Logo" />
 </div>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Node Version](https://img.shields.io/badge/node-%3E%3D20.19-green.svg)](package.json)
-[![Vite v8](https://img.shields.io/badge/vite-v8.0.9-blue.svg)](package.json)
-[![Tailwind v4](https://img.shields.io/badge/tailwind-v4.2.2-teal.svg)](package.json)
-[![Axe Core](https://img.shields.io/badge/axe--core-v4.11.4-orange.svg)](package.json)
+<br/>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/node-%3E%3D20.19-green.svg" alt="Node Version" /></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/vite-v8.0.9-blue.svg" alt="Vite v8" /></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/tailwind-v4.2.2-teal.svg" alt="Tailwind v4" /></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/axe--core-v4.11.4-orange.svg" alt="Axe Core" /></a>
+</p>
 
 **Lumenscope** is a premium, developer-first, web-based accessibility audit instrument. Paste any public website URL, scan its DOM tree under a secure proxy environment, and generate a scored, detailed WCAG compliance assessment report with interactive visual overlays.
 
